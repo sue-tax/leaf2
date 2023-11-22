@@ -1,0 +1,1185 @@
+
+
+%{
+package application;
+
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.io.StringReader;
+import java.util.List;
+import java.util.ArrayList;
+
+
+import javax.xml.xpath.XPath;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.NodeList;
+
+abstract class Expr {
+	String strError = null;
+	boolean flagDone = false;
+
+        // 事前処理（実際は、ここで計算する）
+        abstract void preProc(LeafNode node, Element element);
+        // ChildAtとTagは上書き
+        void preProcMulti(LeafNode node, Element element) {
+                preProc(node, element);
+        }
+
+        String checkError(LeafNode node, Element element) {
+                if (! flagDone) {
+                        preProc(node, element);
+                }
+                return strError;
+        }
+        String checkErrorMulti(LeafNode node, Element element) {
+//                D.dprint_method_start();
+                if (! flagDone) {
+                        preProcMulti(node, element);
+                }
+//                D.dprint(strError);
+                //D.dprint_method_end();
+                return strError;
+        }
+	boolean isMulti() { return false; }
+	List<NodeExpr> getListNode() { return null; }
+
+	BigDecimal eval() { return BigDecimal.ZERO;}
+	boolean evalLogi() { return false; }
+	String evalStr() { return ""; }
+	abstract boolean isNumeric(LeafNode node, Element element);
+	abstract boolean isString(LeafNode node, Element element);
+	abstract boolean isLogical(LeafNode node, Element element);
+}
+
+class NumberExpr extends Expr {
+	private BigDecimal value;
+    NumberExpr(String value) {
+		String rep_value = value.replace("_", "");
+		this.value = new BigDecimal(rep_value); }
+	void preProc(LeafNode node, Element element) {}
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return value.compareTo(BigDecimal.ZERO) == 0; }
+	boolean isNumeric(LeafNode node, Element element) { return true; }
+	boolean isString(LeafNode node, Element element) { return false; }
+	boolean isLogical(LeafNode node, Element element) { return true; }
+}
+
+class StrExpr extends Expr {
+	private String str;
+	StrExpr(String value) { this.str = value; }
+	void preProc(LeafNode node, Element element) {}
+    String evalStr() { return str; }
+	boolean isNumeric(LeafNode node, Element element) { return false; }
+	boolean isString(LeafNode node, Element element) { return true; }
+	boolean isLogical(LeafNode node, Element element) { return false; }
+}
+
+class ChildAtExpr extends Expr {
+	boolean flagNumeric;
+	// boolean flagString;
+	boolean flagLogi;
+	BigDecimal value;
+	String strValue;
+	boolean logiValue;
+
+	private static XPath xpath = XPathFactory.
+			newInstance().	newXPath();
+
+	ChildAtExpr() {}
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+		String strXpath = "./node[1]";
+		NodeList nodeList = null;
+		try {
+			nodeList = (NodeList)xpath.evaluate(
+					strXpath, element,
+					XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			//e.printStackTrace();
+			strError = Message.SYSTEM_ERROR_
+					+ e.toString();
+	//		D.dprint(strError);
+		//	D.dprint_method_end();
+			return;
+		}
+//		D.dprint(nodeList);
+		if (nodeList.getLength() == 0) {
+			strError = Message.NOT_FOUND_NODE;
+//			D.dprint(strError);
+			//D.dprint_method_end();
+			return;
+		}
+		String strNodeName = ((Element)nodeList.item(0)).
+				getAttribute("TEXT");
+        String strNumber = strNodeName.replaceAll("[_,]", "");
+//        D.dprint(strNumber);
+		try {
+			value = new BigDecimal(strNumber);
+			flagNumeric = true;
+	        logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+			flagLogi = true;
+        } catch(Exception e) {
+			flagNumeric = false;
+			flagLogi = false;
+		}
+		strValue = strNumber;
+	}
+	// TODO preProcMulti, isMulti
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	String evalStr() { return strValue; }
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagNumeric;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return true;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagLogi;
+	}
+}
+
+class OpExpr extends Expr {
+	private String operator;
+	private int token;
+	OpExpr(String value, int token) {
+		this.operator = value;
+		this.token = token; }
+	int getToken() { return token; }
+	@Override
+	void preProc(LeafNode node, Element element) {}
+	@Override
+	boolean isNumeric(LeafNode node, Element element) {
+		return false;
+	}
+	@Override
+	boolean isString(LeafNode node, Element element) {
+		return false;
+	}
+	@Override
+	boolean isLogical(LeafNode node, Element element) {
+		return false;
+			}
+}
+
+abstract class SingleExpr extends Expr {
+    protected Expr single;
+    SingleExpr(Expr single) {
+    	this.single = single;
+    }
+}
+
+class NotExpr extends SingleExpr {
+	NotExpr(Expr single) { super(single); }
+	boolean flagDone = false;
+	BigDecimal value;
+	boolean logiValue;
+	String strValue;
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+		strError = single.checkError(node, element);
+		if (strError != null) {
+			return;
+		}
+		if (! single.isLogical(node, element)) {
+			strError = Message.MUST_LOGICAL;
+			return;
+		}
+		logiValue = ! single.evalLogi();
+		value = logiValue?BigDecimal.ONE:BigDecimal.ZERO;
+		strValue = logiValue?"TRUE":"FALSE";
+	}
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return true;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+}
+
+abstract class BinExpr extends Expr {
+	protected Expr left, right;
+	BinExpr(Expr left, Expr right) {
+		this.left = left;  this.right = right;
+	}
+}
+
+abstract class LogiExpr extends BinExpr {
+	LogiExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean flagDone = false;
+	BigDecimal value;
+	boolean logiValue;
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+		strError = left.checkError(node, element);
+		if (strError != null) {
+			return;
+		}
+		strError = right.checkError(node, element);
+		if (strError != null) {
+			return;
+		}
+
+		if (! left.isLogical(node, element)) {
+			strError = Message.MUST_LOGICAL;
+			return;
+		}
+		if (! right.isLogical(node, element)) {
+			strError = Message.MUST_LOGICAL;
+			return;
+		}
+		logiValue = proc();
+		value = logiValue?BigDecimal.ONE:BigDecimal.ZERO;
+	}
+	abstract boolean proc();
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return false;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+
+}
+
+class OrExpr extends LogiExpr {
+	OrExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return left.evalLogi() || right.evalLogi(); }
+}
+
+class AndExpr extends LogiExpr {
+	AndExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return left.evalLogi() && right.evalLogi(); }
+}
+
+abstract class HikakuExpr extends BinExpr {
+	HikakuExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean flagDone = false;
+	BigDecimal value;
+	boolean logiValue;
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+		strError = left.checkError(node, element);
+		if (strError != null) {
+			return;
+		}
+		strError = right.checkError(node, element);
+		if (strError != null) {
+			return;
+		}
+		if (! left.isNumeric(node, element)) {
+			strError = Message.MUST_NUMERIC;
+			return;
+		}
+		if (! right.isNumeric(node, element)) {
+			strError = Message.MUST_NUMERIC;
+			return;
+		}
+		logiValue = proc();
+		value = logiValue?BigDecimal.ONE:BigDecimal.ZERO;
+	}
+	abstract boolean proc();
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return false;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+}
+
+class EqualExpr extends HikakuExpr {
+	EqualExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return (left.eval().compareTo(right.eval())==0);
+	}
+}
+
+class NotEqualExpr extends HikakuExpr {
+	NotEqualExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return (left.eval().compareTo(right.eval())!=0);
+	}
+}
+
+class DainariExpr extends HikakuExpr {
+	DainariExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return (left.eval().compareTo(right.eval())==1);
+	}
+}
+
+class DainariEqualExpr extends HikakuExpr {
+	DainariEqualExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return (left.eval().compareTo(right.eval())>=0);
+//		return (left.eval() >= right.eval());
+	}
+}
+
+class ShounariExpr extends HikakuExpr {
+	ShounariExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return (left.eval().compareTo(right.eval())<0);
+//		return (left.eval() < right.eval());
+	}
+}
+
+class ShounariEqualExpr extends HikakuExpr {
+	ShounariEqualExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean proc() {
+		return (left.eval().compareTo(right.eval())<=0);
+//		return (left.eval() <= right.eval());
+	}
+}
+
+abstract class AccExpr extends BinExpr {
+	AccExpr(Expr left, Expr right) {
+		super(left, right); }
+	boolean flagDone = false;
+	BigDecimal value;
+	boolean logiValue;
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+		strError = left.checkError(node, element);
+		if (strError != null) {
+			return;
+		}
+		strError = right.checkError(node, element);
+		if (strError != null) {
+			return;
+		}
+
+		if (! left.isNumeric(node, element)) {
+			strError = Message.MUST_NUMERIC;
+			return;
+		}
+		if (! right.isNumeric(node, element)) {
+			strError = Message.MUST_NUMERIC;
+			return;
+		}
+		value = proc();
+        logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+	}
+	abstract BigDecimal proc();
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return false;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return true;
+	}
+}
+
+class AddExpr extends AccExpr {
+	AddExpr(Expr left, Expr right) {
+		super(left, right); }
+	BigDecimal proc() {
+    	return left.eval().add(right.eval()); }
+}
+
+class SubExpr extends AccExpr {
+	SubExpr(Expr left, Expr right) {
+		super(left, right); }
+	BigDecimal proc() {
+		return left.eval().subtract(right.eval()); }
+}
+
+class MultExpr extends AccExpr {
+	MultExpr(Expr left, Expr right) {
+		super(left, right); }
+	BigDecimal proc() {
+		return left.eval().multiply(right.eval()); }
+}
+
+class DivExpr extends AccExpr {
+	DivExpr(Expr left, Expr right) {
+		super(left, right); }
+	BigDecimal proc() {
+		return left.eval().divide(right.eval()); }
+}
+
+class RuijouExpr extends AccExpr {
+	RuijouExpr(Expr left, Expr right) {
+		super(left, right); }
+	BigDecimal proc() {
+		return new BigDecimal(Math.pow(
+			left.eval().doubleValue(),
+			right.eval().doubleValue())); }
+}
+
+class TagExpr extends Expr {
+	StrExpr strMarkDef;
+	StrExpr strLpath;
+	StrExpr strMarkRef;
+	IndexExpr index1;
+	IndexExpr index2;
+
+	boolean flagNumeric;
+	// boolean flagString;
+	boolean flagLogi;
+	BigDecimal value;
+	String strValue;
+	boolean logiValue;
+
+	List<NodeExpr>listNode = null;
+	boolean flagMulti = false;
+
+	private static XPath xpath = XPathFactory.
+			newInstance().	newXPath();
+
+	TagExpr(StrExpr markdef, StrExpr lpath,
+			StrExpr markref) {
+		strMarkDef = markdef;
+		strLpath = lpath;
+		strMarkRef = markref;
+	}
+	public void setIndex(IndexExpr index1, IndexExpr index2) {
+		this.index1 = index1;
+		this.index2 = index2;
+	}
+
+	void setError(String strError) {
+		this.strError = strError;
+	}
+
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+
+		Document document = element.
+				getOwnerDocument();
+		CalcTag calcTag = new CalcTag(
+				node, document, this, element);
+
+		// TODO 指定されたTagのノードが
+		// 表だった場合の処理
+
+		String strCalc = calcTag.calcExprTag();
+		if (strCalc == null) {
+			strError = calcTag.getError();
+		        return;
+		}
+		try {
+			value = new BigDecimal(strCalc);
+			flagNumeric = true;
+	        logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+			flagLogi = true;
+        } catch(Exception e) {
+			flagNumeric = false;
+			flagLogi = false;
+		}
+		strValue = strCalc;
+	}
+
+	// 実際のタグの評価は、ここではしない
+	void preProcMulti(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+
+		Document document = element.
+				getOwnerDocument();
+		CalcTag calcTag = new CalcTag(
+				node, document, this, element);
+        listNode = calcTag.calcExprTagMulti();
+        if (listNode == null) {
+        	strError = calcTag.getError();
+            return;
+        }
+
+		// TODO 指定されたTagのノードが
+		// 表だった場合の処理
+
+		flagMulti = true;
+	}
+	boolean isMulti() { return flagMulti; }
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	String evalStr() { return strValue; }
+	List<NodeExpr> getListNode() { return listNode; }
+
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagNumeric;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return true;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagLogi;
+	}
+}
+
+class NodeExpr extends Expr {
+	// Tagを評価した際に複数のノードが該当する場合の
+	// 個々のElement
+	//LeafNode node;
+	Document document;
+	Element nodeElement;
+	boolean flagDone = false;
+
+	boolean flagNumeric;
+	// boolean flagString;
+	boolean flagLogi;
+	BigDecimal value;
+	String strValue;
+	boolean logiValue;
+
+	NodeExpr(Document document, Element element) {
+		//this.node = node;
+		this.document = document;
+		this.nodeElement = element;
+	}
+
+	public Document getDocument() {
+		return document;
+	}
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+
+		Document document = nodeElement.
+				getOwnerDocument();
+		LeafNode leafNode = new LeafNode(document,
+				nodeElement);
+		leafNode.calcNode();
+        String strCalc = LeafNode.getValue(nodeElement);
+		try {
+			value = new BigDecimal(strCalc);
+			flagNumeric = true;
+	        logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+			flagLogi = true;
+        } catch(Exception e) {
+			flagNumeric = false;
+			flagLogi = false;
+		}
+		strValue = strCalc;
+	}
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	String evalStr() { return strValue; }
+
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagNumeric;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return true;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagLogi;
+	}
+}
+
+
+class StringNodeExpr extends NodeExpr {
+	// 文字列から作るダミー的なNodeExpr
+	StringNodeExpr(Document document, Element element,
+			String strValue) {
+       	super(document, element);
+		this.strValue = strValue;
+		try {
+			value = new BigDecimal(strValue);
+			flagNumeric = true;
+	        logiValue = (value.compareTo(BigDecimal.ZERO)
+	        		==0)?true:false;
+			flagLogi = true;
+        } catch(Exception e) {
+			flagNumeric = false;
+			flagLogi = false;
+		}
+	}
+
+	void preProc(LeafNode node, Element element) {
+		return;
+	}
+}
+
+
+class IndexShikiExpr extends Expr {
+	// Tagを評価した際に表だった際の
+	// 表の行・列を指定するインデックス
+
+	// 数式、`#`、`#+数式`、`#-数式`、文字列
+	Expr expr;
+	boolean sharp;
+	boolean plus;
+
+	IndexShikiExpr(
+			Expr expr, boolean sharp, boolean plus ) {
+		this.expr = expr;
+		this.sharp = sharp;
+		this.plus = plus;
+	}
+
+		@Override
+		void preProc(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+
+		}
+
+		@Override
+		boolean isNumeric(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+
+		@Override
+		boolean isString(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+
+		@Override
+		boolean isLogical(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+
+}
+
+class IndexExpr extends Expr {
+	// `[インデックス式]`　１行、１列の指定
+	// `[:]`　行全体、列全体の指定
+	// `[インデックス式:]`　インデックス式から最後までの指定（インデックス式で指定した行、列を含む）
+	// `[:インデックス式]` 　最初からインデックス式までの指定（インデックス式で指定した行、列を含む）
+	IndexShikiExpr single;
+	boolean all;
+	IndexShikiExpr start;
+	IndexShikiExpr end;
+
+	IndexExpr( IndexShikiExpr single, boolean all,
+			IndexShikiExpr start, IndexShikiExpr end ) {
+		this.single = single;
+		this.all = all;
+		this.start = start;
+		this.end = end;
+	}
+			@Override
+		void preProc(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+
+		}
+
+		@Override
+		boolean isNumeric(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+
+		@Override
+		boolean isString(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+
+		@Override
+		boolean isLogical(LeafNode node, Element element) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+
+}
+
+class CellExpr extends NodeExpr {
+	// Tagを評価した際に表のセルが指定された場合の
+	// 個々のElement
+
+	CellExpr(Document document, Element element) {
+		//this.node = node;
+		super(document, element);
+	}
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+
+		Document document = nodeElement.
+				getOwnerDocument();
+		LeafNode leafNode = new LeafNode(document,
+				nodeElement);
+		String strCalc = leafNode.calcCell();
+        strCalc = strCalc.trim();
+		try {
+			value = new BigDecimal(strCalc);
+			flagNumeric = true;
+	        logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+			flagLogi = true;
+        } catch(Exception e) {
+			flagNumeric = false;
+			flagLogi = false;
+		}
+		strValue = strCalc;
+	}
+}
+
+class ListExpr extends Expr {
+	List<Expr> listExpr;
+	ListExpr() {
+		listExpr = new ArrayList<Expr>();
+	}
+	ListExpr(Expr expr) {
+		listExpr = new ArrayList<Expr>();
+		listExpr.add(expr);
+	}
+	void add(Expr expr) {
+		listExpr.add(expr);
+	}
+	List<Expr> getListExpr() {
+		return listExpr;
+	}
+		@Override
+		void preProc(LeafNode node, Element element) {
+		}
+		@Override
+		boolean isNumeric(LeafNode node, Element element) {
+			return false;
+		}
+		@Override
+		boolean isString(LeafNode node, Element element) {
+			return false;
+		}
+		@Override
+		boolean isLogical(LeafNode node, Element element) {
+			return false;
+		}
+}
+
+
+class FuncExpr extends Expr {
+	int token;
+	List<Expr> listExpr;
+
+	boolean flagNumeric;
+	boolean flagString;
+	boolean flagLogi;
+	BigDecimal value;
+	String strValue;
+	boolean logiValue;
+
+	FuncExpr(Expr token, Expr listExpr) {
+		this.token = ((OpExpr)token).getToken();
+		this.listExpr = ((ListExpr)listExpr).getListExpr();
+	}
+
+	void preProc(LeafNode node, Element element) {
+		if (flagDone) {
+			return;
+		}
+		flagDone = true;
+
+		LeafFunc leafFunc = new LeafFunc(
+				node, token, element, listExpr);
+		strError = leafFunc.checkError();
+		if (strError != null) {
+			flagNumeric = false;
+			flagLogi = false;
+			flagString = false;
+			return;
+		}
+		value = leafFunc.value;
+		logiValue = leafFunc.logiValue;
+		strValue = leafFunc.strValue;
+		flagNumeric = leafFunc.flagNumeric;
+		flagLogi = leafFunc.flagLogi;
+	}
+
+	BigDecimal eval() { return value; }
+	boolean evalLogi() { return logiValue; }
+	String evalStr() { return strValue; }
+	boolean isNumeric(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagNumeric;
+	}
+	boolean isString(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);	// 後で実行しても良いが
+		}
+		return true;
+	}
+	boolean isLogical(LeafNode node, Element element) {
+		if (! flagDone) {
+			preProc(node, element);
+		}
+		return flagLogi;
+	}
+}
+
+%}
+
+// 属性値の型
+%semantic Expr
+
+%token OR AND NOT
+%token PLUS MINUS MULT DIV RUIJOU
+%token EQUAL NOT_EQUAL
+%token DAINARI DAINARI_EQUAL SHOUNARI SHOUNARI_EQUAL
+%token NUMBER STRING CHILD_AT
+%token L_KAKKO R_KAKKO L_KAGI R_KAGI COLON SHARP
+%token L_NAMI R_NAMI PIPE COMMA NANDEMO
+%token LPATH MARKDEF MARKREF
+%token SUM MIN MAX
+%token TRUE FALSE IF IFS
+%token INT ROUNDUP ROUNDDOWN
+%token LOOKUP
+%token RETURN EOF EOS
+
+  /* 演算子の優先順位 */
+%left  '+' '-'
+%left  '*' '/'
+%left  '^'
+
+%%
+   /* 文法記述とそれに対する動作（還元時に実行されるプログラム） */
+   /* 通常の BNFの → の代わりに : を書く。各BNFは ; で区切る。 */
+   /* 最初に start symbolを書く */
+
+
+input :
+	shiki {
+		$$ = $1; }
+	;
+
+shiki :
+	or_shiki {
+		$$ = $1; }
+	;
+
+or_shiki :
+	and_shiki { $$ = $1; }
+	| or_shiki OR and_shiki { $$ = new OrExpr($1, $3); }
+	;
+
+and_shiki :
+	hitei_shiki { $$ = $1; }
+	| and_shiki AND hitei_shiki { $$ = new AndExpr($1, $3); }
+	;
+
+hitei_shiki :
+	hikaku_shiki { $$ = $1; }
+	| NOT hikaku_shiki { $$ = new NotExpr($2); }
+	;
+
+hikaku_shiki :
+	kagen_shiki { $$ = $1; }
+	| kagen_shiki EQUAL hikaku_shiki {
+		$$ = new EqualExpr($1, $3); }
+	| kagen_shiki NOT_EQUAL hikaku_shiki {
+		$$ = new NotEqualExpr($1, $3); }
+	| kagen_shiki DAINARI hikaku_shiki {
+		$$ = new DainariExpr($1, $3); }
+	| kagen_shiki DAINARI_EQUAL hikaku_shiki {
+		$$ = new DainariEqualExpr($1, $3); }
+	| kagen_shiki SHOUNARI hikaku_shiki {
+		$$ = new ShounariExpr($1, $3); }
+	| kagen_shiki SHOUNARI_EQUAL hikaku_shiki {
+		$$ = new ShounariEqualExpr($1, $3); }
+	;
+
+
+kagen_shiki :
+	 kou { $$ = $1;}
+	| kagen_shiki PLUS kou
+		{ $$ = new AddExpr($1, $3); }
+	| kagen_shiki MINUS kou
+		{ $$ = new SubExpr($1, $3); }
+	;
+
+kou : inshi { $$ = $1; }
+	| kou MULT inshi { $$ = new MultExpr($1, $3); }
+	| kou DIV inshi { $$ = new DivExpr($1, $3); }
+	;
+
+inshi : nijishi { $$ = $1; }
+	| inshi RUIJOU nijishi { $$ = new RuijouExpr($1, $3); }
+	;
+
+nijishi : ichijishi { $$ = $1; }
+	| PLUS ichijishi { $$ = $2; }
+	| MINUS ichijishi { $$ = new SubExpr(new NumberExpr("0"), $2); }
+	;
+
+ichijishi : number { $$ = $1; }
+	| L_KAKKO shiki R_KAKKO { $$ = $2; }
+	| CHILD_AT { $$ = $1; }
+	| tag { $$ = $1; }
+	| function { $$ = $1; }
+	;
+// 関数、xpath
+
+number :
+	NUMBER { $$ = $1; }
+	;
+
+string :
+	STRING { $$ = $1; }
+	;
+
+tag :
+	tag_main { $$ = $1;}
+	| tag_main tag_index tag_index {
+			((TagExpr)$1).setIndex((IndexExpr)$2, (IndexExpr)$3);
+			$$ = $1; }
+	;
+
+tag_main :
+	L_NAMI LPATH R_NAMI { $$ = new TagExpr(null, (StrExpr)$2, null); }
+	| L_NAMI MARKDEF LPATH R_NAMI {
+			$$ = new TagExpr((StrExpr)$2, (StrExpr)$3, null); }
+	| L_NAMI MARKREF R_NAMI {
+			$$ = new TagExpr(null, null,(StrExpr)$2); }
+	;
+
+tag_index :
+	L_KAGI index_shiki R_KAGI {
+			$$ = new IndexExpr((IndexShikiExpr)$2, false, null, null); }
+	| L_KAGI COLON R_KAGI {
+			$$ = new IndexExpr(null, true, null, null); }
+	| L_KAGI index_shiki COLON R_KAGI {
+			$$ = new IndexExpr(null, false, (IndexShikiExpr)$2, null); }
+	| L_KAGI COLON index_shiki R_KAGI {
+			$$ = new IndexExpr(null, false, null, (IndexShikiExpr)$3); }
+	| L_KAGI index_shiki COLON index_shiki R_KAGI {
+			$$ = new IndexExpr(null, false, (IndexShikiExpr)$2, (IndexShikiExpr)$4); }
+	;
+
+index_shiki :
+	shiki { $$ = new IndexShikiExpr($1, false, false); }
+	| SHARP { $$ = new IndexShikiExpr(null, true, true); }
+	| SHARP PLUS shiki {
+			$$ = new IndexShikiExpr($3, true, true); }
+	| SHARP MINUS shiki {
+			$$ = new IndexShikiExpr($3, true, false); }
+	| string { $$ = new IndexShikiExpr($1, false, false); }
+	;
+
+function :
+	SUM L_KAKKO shiki_list R_KAKKO { $$ = new FuncExpr($1, $3); }
+	| MIN L_KAKKO shiki_list R_KAKKO { $$ = new FuncExpr($1, $3); }
+	| MAX L_KAKKO shiki_list R_KAKKO { $$ = new FuncExpr($1, $3); }
+	| TRUE L_KAKKO R_KAKKO {
+		ListExpr listExpr = new ListExpr();
+		$$ = new FuncExpr($1, listExpr); }
+	| FALSE L_KAKKO R_KAKKO {
+		ListExpr listExpr = new ListExpr();
+		$$ = new FuncExpr($1, listExpr); }
+	| IF L_KAKKO shiki COMMA shiki COMMA shiki R_KAKKO {
+			ListExpr listExpr = new ListExpr($3);
+			listExpr.add($5);
+			listExpr.add($7);
+			$$ = new FuncExpr($1, listExpr);
+		}
+	| IFS L_KAKKO shiki_list R_KAKKO {
+		$$ = new FuncExpr($1, $3); }
+	| INT L_KAKKO shiki R_KAKKO {
+		ListExpr listExpr = new ListExpr($3);
+		$$ = new FuncExpr($1, listExpr); }
+	| ROUNDDOWN L_KAKKO shiki R_KAKKO {
+		ListExpr listExpr = new ListExpr($3);
+		$$ = new FuncExpr($1, listExpr); }
+	| ROUNDDOWN L_KAKKO shiki COMMA shiki R_KAKKO {
+		ListExpr listExpr = new ListExpr($3);
+		listExpr.add($5);
+		$$ = new FuncExpr($1, listExpr); }
+	| ROUNDUP L_KAKKO shiki R_KAKKO {
+		ListExpr listExpr = new ListExpr($3);
+		$$ = new FuncExpr($1, listExpr); }
+	| ROUNDUP L_KAKKO shiki COMMA shiki R_KAKKO {
+		ListExpr listExpr = new ListExpr($3);
+		listExpr.add($5);
+		$$ = new FuncExpr($1, listExpr); }
+	| LOOKUP L_KAKKO shiki COMMA shiki COMMA shiki COMMA shiki R_KAKKO {
+		ListExpr listExpr = new ListExpr($3);
+		listExpr.add($5);
+		listExpr.add($7);
+		listExpr.add($9);
+		$$ = new FuncExpr($1, listExpr); }
+	| LOOKUP L_KAKKO shiki COMMA shiki COMMA shiki R_KAKKO {
+		ListExpr listExpr = new ListExpr($3);
+		listExpr.add($5);
+		listExpr.add($7);
+		listExpr.add(null);
+		$$ = new FuncExpr($1, listExpr); }
+
+	;
+
+shiki_list :
+	shiki {
+			ListExpr listExpr = new ListExpr($1);
+			$$ = listExpr;
+		}
+	| shiki_list COMMA shiki {
+			((ListExpr)$1).add($3);
+			$$ = $1;
+		}
+	;
+
+%%
+
+  /* フィールドやメソッドの定義 */
+
+  LeafParser(LeafLexer l) {
+      lexer = l;
+  }
+
+  private LeafLexer lexer;
+
+  private void yyerror(String msg) {
+  		D.dprint((Expr)yyrv);
+  		if (lexer.yyatEOF() ) {
+  			return;
+  		}
+      System.out.println("エラー: " + msg);
+      System.exit(1);
+  }
+
+public Expr BuildAs(){
+return ( Expr )yyrv;
+}
+  public static void main(String[] args) {
+// 	  InputStreamReader in = new InputStreamReader(System.in);
+  		StringReader in = new StringReader("{..}");
+	  LeafLexer lexer = new LeafLexer(in);
+	  D.dprint("a");
+      LeafParser calc = new LeafParser(lexer);
+	  D.dprint("b");
+      lexer.nextToken();
+      D.dprint("c");
+      calc.parse();    // parse the input
+	  D.dprint("d");
+	  Expr expr = calc.BuildAs();
+	  D.dprint(expr);
+  }
+
