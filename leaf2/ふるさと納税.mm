@@ -2,7 +2,7 @@
 <!--To view this file, download free mind mapping software Freeplane from https://www.freeplane.org -->
 <node TEXT="ふるさと納税" FOLDED="false" ID="ID_1900760809" CREATED="1696474676985" MODIFIED="1699018829555" COLOR="#000000">
 <font NAME="SansSerif" SIZE="20"/>
-<hook NAME="MapStyle" zoom="0.8">
+<hook NAME="MapStyle">
     <properties edgeColorConfiguration="#808080ff,#ff0000ff,#0000ffff,#00ff00ff,#ff00ffff,#00ffffff,#7c0000ff,#00007cff,#007c00ff,#7c007cff,#007c7cff,#7c7c00ff" show_icon_for_attributes="true" show_note_icons="true" fit_to_viewport="false"/>
 
 <map_styles>
@@ -793,7 +793,7 @@
 <attribute NAME="式" VALUE="@"/>
 <node TEXT="0" ID="ID_1084666203" CREATED="1699881205328" MODIFIED="1699881206710"/>
 </node>
-<node TEXT="居住がH26年からR3年_消費税8パーセントまたは10パーセント" ID="ID_861137478" CREATED="1699881291658" MODIFIED="1699881346088"><richcontent TYPE="NOTE">
+<node TEXT="居住がH26年からR3年_消費税8パーセントまたは10パーセント" FOLDED="true" ID="ID_861137478" CREATED="1699881291658" MODIFIED="1699881346088"><richcontent TYPE="NOTE">
 <html>
   <head>
     
@@ -1963,8 +1963,9 @@
 <attribute NAME="式" VALUE="MAX( {*} )"/>
 <node TEXT="本則" ID="ID_1526749506" CREATED="1699762639880" MODIFIED="1699762718614">
 <attribute NAME="式" VALUE="MIN(MAX({//医療費支払額}-{差引額},0),2000000)"/>
-<node TEXT="差引額" ID="ID_1085759086" CREATED="1699762724097" MODIFIED="1699762765053">
-<attribute NAME="式" VALUE="MIN(INT({../../../..//合計所得金額}*0.05),100000)"/>
+<node TEXT="差引額" ID="ID_1085759086" CREATED="1699762724097" MODIFIED="1700662443892">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="211.49999 pt"/>
+<attribute NAME="式" VALUE="MIN(INT({../../../..//所得金額//合計所得金額}*0.05),100000)"/>
 </node>
 </node>
 <node TEXT="特則_セルフメディケーション" ID="ID_1640730911" CREATED="1699762653402" MODIFIED="1699762695135">
@@ -2048,11 +2049,13 @@
 <node TEXT="勤労学生控除" ID="ID_1694719848" CREATED="1699968187550" MODIFIED="1699968395188">
 <attribute NAME="式" VALUE="IF({//勤労学生}=1,  260_000,0)"/>
 </node>
-<node TEXT="配偶者控除" FOLDED="true" ID="ID_661417928" CREATED="1699764620889" MODIFIED="1699974428469">
+<node TEXT="配偶者控除" ID="ID_661417928" CREATED="1699764620889" MODIFIED="1699974428469">
 <attribute_layout NAME_WIDTH="24.75 pt" VALUE_WIDTH="1610.24995 pt"/>
 <attribute NAME="式" VALUE="IF(({//配偶者の有無}=1) AND({//配偶者の合計所得金額_住民税}&lt;=480_000), IF({//配偶者が老人}=0, IFS({.//本人の合計所得金額}&lt;=9_000_000,330_000, {.//本人の合計所得金額}&lt;=9_500_000,230_000, {.//本人の合計所得金額}&lt;=10_000_000,110_000, TRUE(),0), IFS({.//本人の合計所得金額}&lt;=9_000_000,380_000, {.//合計所得金額}&lt;=9_500_000,260_000, {.//合計所得金額}&lt;=10_000_000,130_000, TRUE(),0) ) ,0)"/>
-<node TEXT="本人の合計所得金額" ID="ID_849625864" CREATED="1699768236759" MODIFIED="1699768345992">
-<attribute NAME="式" VALUE="{../../..//合計所得金額}"/>
+<node TEXT="本人の合計所得金額" ID="ID_849625864" CREATED="1699768236759" MODIFIED="1700662158280">
+<icon BUILTIN="button_cancel"/>
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="107.25 pt"/>
+<attribute NAME="式" VALUE="{../../..//所得金額//合計所得金額}"/>
 </node>
 </node>
 <node TEXT="配偶者特別控除" ID="ID_1019699840" CREATED="1699974384529" MODIFIED="1700039762437">
@@ -2061,12 +2064,12 @@
 <node TEXT="本人" ID="ID_1876130114" CREATED="1699968691949" MODIFIED="1699969332134">
 <attribute_layout NAME_WIDTH="24.75 pt" VALUE_WIDTH="337.49999 pt"/>
 <attribute NAME="式" VALUE="IFS({本人の合計所得金額}&lt;=9_000_000,2 ,{本人の合計所得金額}&lt;=9_500_000,3 ,TRUE(),4)"/>
-<node TEXT="本人の合計所得金額" ID="ID_38828308" CREATED="1699968771999" MODIFIED="1700039813038">
+<node TEXT="本人の合計所得金額" ID="ID_38828308" CREATED="1699968771999" MODIFIED="1700662315515">
 <attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="114 pt"/>
-<attribute NAME="式" VALUE="{../../../..//合計所得金額}"/>
+<attribute NAME="式" VALUE="{../../../..//所得金額//合計所得金額}"/>
 </node>
 </node>
-<node TEXT="配偶者" ID="ID_612772059" CREATED="1699968808100" MODIFIED="1700040000682">
+<node TEXT="配偶者" ID="ID_612772059" CREATED="1699968808100" MODIFIED="1700661368649">
 <attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="479.24999 pt"/>
 <attribute NAME="式" VALUE="LOOKUP({配偶者の合計所得金額},{//住民税配偶者特別控除表}[:][1],{//住民税配偶者特別控除表}[:][{../本人}],TRUE())"/>
 <node TEXT="配偶者の合計所得金額" ID="ID_432657457" CREATED="1699968921072" MODIFIED="1700039862044">
@@ -2499,7 +2502,8 @@
 </node>
 <node TEXT="配偶者特別控除_調整" ID="ID_56025210" CREATED="1700394922281" MODIFIED="1700395761981">
 <attribute NAME="式" VALUE="IF(({.//配偶者の合計所得金額}&gt;480_000) AND ({.//配偶者の合計所得金額}&lt;500_000), {_50万円未満}, IF(({.//配偶者の合計所得金額}&gt;=500_000) AND ({.//配偶者の合計所得金額}&lt;550_000), {_50万円以上}, 0))"/>
-<node TEXT="本人の合計所得金額" ID="ID_985217815" CREATED="1700395668181" MODIFIED="1700395797959">
+<node TEXT="本人の合計所得金額" ID="ID_985217815" CREATED="1700395668181" MODIFIED="1700661160972">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="156.75 pt"/>
 <attribute NAME="式" VALUE="{//住民税/所得金額/合計所得金額}"/>
 </node>
 <node TEXT="配偶者の合計所得金額" ID="ID_1348515612" CREATED="1700395668181" MODIFIED="1700395826957">
@@ -2721,6 +2725,334 @@
 </node>
 <node TEXT="ふるさと納税を含めない" ID="ID_896046427" CREATED="1700490269876" MODIFIED="1700490317837">
 <attribute NAME="式" VALUE="{税額控除後の税額}"/>
+<node TEXT="税額" ID="ID_1854341439" CREATED="1700660037525" MODIFIED="1700660066849">
+<attribute NAME="式" VALUE="{../../$}"/>
+<node TEXT="道府県民税" ID="ID_290536377" CREATED="1700660285636" MODIFIED="1700660314847">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+<node TEXT="市町村民税" ID="ID_1757604512" CREATED="1700660317031" MODIFIED="1700660349424">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+</node>
+<node TEXT="調整控除" ID="ID_272438409" CREATED="1700660037525" MODIFIED="1700660364713">
+<attribute NAME="式" VALUE="{../../$}"/>
+<node TEXT="道府県民税" ID="ID_425139548" CREATED="1700660285636" MODIFIED="1700660314847">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+<node TEXT="市町村民税" ID="ID_107356760" CREATED="1700660317031" MODIFIED="1700660349424">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+</node>
+<node TEXT="配当控除" FOLDED="true" ID="ID_1277760923" CREATED="1700660037525" MODIFIED="1700660377648">
+<attribute NAME="式" VALUE="{../../$}"/>
+<node TEXT="道府県民税" ID="ID_1112685558" CREATED="1700660285636" MODIFIED="1700660314847">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+<node TEXT="市町村民税" ID="ID_393255847" CREATED="1700660317031" MODIFIED="1700660349424">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+</node>
+<node TEXT="住宅借入金等特別税額控除" ID="ID_761718542" CREATED="1700660701271" MODIFIED="1700660784415">
+<attribute NAME="式" VALUE="{道府県民税}+{市町村民税}"/>
+<richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      ３千万円未対応
+    </p>
+  </body>
+</html></richcontent>
+<node TEXT="所得税控除後" ID="ID_657898386" CREATED="1700660794687" MODIFIED="1700660817888">
+<attribute NAME="式" VALUE="MAX({//住宅ローン控除額}-{//所得税//ふるさと納税を含めない//住宅借入金等特別税額控除},0)"/>
+</node>
+<node TEXT="合計所得金額" ID="ID_1395569179" CREATED="1700660827241" MODIFIED="1700661047183">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="161.25 pt"/>
+<attribute NAME="式" VALUE="{//住民税//所得金額//合計所得金額}"/>
+</node>
+<node TEXT="道府県民税" ID="ID_1463926466" CREATED="1700741860554" MODIFIED="1700742893156">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="616.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//居住が平成19年または20年}&lt;&gt;1, MIN({控除可能額},MAX({../../税額//道府県民税}-{../../調整控除/道府県民税}-{../../配当控除/道府県民税},0)), 0)"/>
+<node TEXT="控除可能額" ID="ID_1393485174" CREATED="1700742923400" MODIFIED="1700742948896">
+<attribute NAME="式" VALUE="MIN(INT({../../所得税控除後}*{.//住宅借入金控除割合}), {.//限度額})"/>
+<node TEXT="限度額" ID="ID_1763993698" CREATED="1700741883820" MODIFIED="1700741901624">
+<attribute NAME="式" VALUE="MIN({../../..//合計所得金額}*{.//住宅借入金控除率},{.//住宅借入金控除限度額})"/>
+<node TEXT="住宅借入金控除割合" ID="ID_975810897" CREATED="1700741912586" MODIFIED="1700741961316" HGAP_QUANTITY="29.75 pt">
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1,0.2,0.4)"/>
+<node TEXT="住宅借入金控除率" ID="ID_1073354212" CREATED="1700742011570" MODIFIED="1700743070284">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="826.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.014,0.01),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.028,0.02))"/>
+<node TEXT="住宅借入金控除限度額" ID="ID_1115080656" CREATED="1700743155989" MODIFIED="1700743223906">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="869.99997 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,27_300,19_500),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,54_600,39_000))"/>
+</node>
+</node>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="市町村民税" ID="ID_1443452252" CREATED="1700741860554" MODIFIED="1700743325585">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="616.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//居住が平成19年または20年}&lt;&gt;1, MIN({控除可能額},MAX({../../税額/市町村民税}-{../../調整控除/市町村民税}-{../../配当控除/市町村民税},0)), 0)"/>
+<attribute NAME="値" VALUE="0"/>
+<node TEXT="控除可能額" ID="ID_1110871995" CREATED="1700742923400" MODIFIED="1700742948896">
+<attribute NAME="式" VALUE="MIN(INT({../../所得税控除後}*{.//住宅借入金控除割合}), {.//限度額})"/>
+<attribute NAME="値" VALUE="0"/>
+<node TEXT="限度額" ID="ID_1689820890" CREATED="1700741883820" MODIFIED="1700741901624">
+<attribute NAME="式" VALUE="MIN({../../..//合計所得金額}*{.//住宅借入金控除率},{.//住宅借入金控除限度額})"/>
+<attribute NAME="値" VALUE="39000"/>
+<node TEXT="住宅借入金控除割合" ID="ID_1819396246" CREATED="1700741912586" MODIFIED="1700743390105" HGAP_QUANTITY="29.75 pt">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="165.75 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1,0.8,0.6)"/>
+<attribute NAME="値" VALUE="0.4"/>
+<node TEXT="住宅借入金控除率" ID="ID_1404303924" CREATED="1700742011570" MODIFIED="1700743453914">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="826.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.056,0.04),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.042,0.03))"/>
+<attribute NAME="値" VALUE="0.02"/>
+<node TEXT="住宅借入金控除限度額" ID="ID_661344031" CREATED="1700743155989" MODIFIED="1700743223906">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="869.99997 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,27_300,19_500),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,54_600,39_000))"/>
+<attribute NAME="値" VALUE="39000"/>
+</node>
+</node>
+</node>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="寄附金税額控除" ID="ID_1578949677" CREATED="1700743637019" MODIFIED="1700743660722">
+<attribute NAME="式" VALUE="{道府県民税}+{市町村民税}"/>
+<node TEXT="寄附金額_共通" ID="ID_1440790573" CREATED="1700743675144" MODIFIED="1700743719912">
+<attribute NAME="式" VALUE="{.//条例指定以外の寄附金}"/>
+<node TEXT="第1号寄附金" ID="ID_1849105845" CREATED="1700743725845" MODIFIED="1700743739240">
+<node TEXT="条例指定以外の寄附金" ID="ID_226035798" CREATED="1700743749161" MODIFIED="1700743776857">
+<attribute NAME="式" VALUE="{//住民税税額控除の対象の寄附金支払額}"/>
+</node>
+</node>
+<node TEXT="合計所得金額" ID="ID_1658267182" CREATED="1700743788196" MODIFIED="1700743821504">
+<attribute NAME="式" VALUE="{//住民税//所得金額//合計所得金額}"/>
+</node>
+</node>
+<node TEXT="道府県民税" ID="ID_1761096445" CREATED="1700743840164" MODIFIED="1700743861487">
+<attribute NAME="式" VALUE="{一般控除額}"/>
+<node TEXT="寄附金額" ID="ID_1568543646" CREATED="1700743875905" MODIFIED="1700743891080">
+<attribute NAME="式" VALUE="{../../寄附金額_共通}+{//条例指定_道府県_寄附金支払額}"/>
+</node>
+<node TEXT="寄附金限度額" ID="ID_1378012031" CREATED="1700743902702" MODIFIED="1700748579764">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="334.49999 pt"/>
+<attribute NAME="式" VALUE="MIN({../寄附金額},ROUNDUP(../..//合計所得金額}*0.3))"/>
+</node>
+<node TEXT="一般控除額" ID="ID_875431782" CREATED="1700743926445" MODIFIED="1700743941433">
+<attribute NAME="式" VALUE="ROUNDUP(MAX(({../寄附金限度額}-2000),0)*{寄附金控除割合})"/>
+<node TEXT="寄附金控除割合" ID="ID_1015788646" CREATED="1700743951061" MODIFIED="1700743968600">
+<attribute NAME="式" VALUE="IF({//政令指定都市}=1,0.02,0.04)"/>
+</node>
+</node>
+</node>
+<node TEXT="市町村民税" ID="ID_1361238220" CREATED="1700743840164" MODIFIED="1700747187587">
+<attribute NAME="式" VALUE="{一般控除額}"/>
+<node TEXT="寄附金額" ID="ID_1266069119" CREATED="1700743875905" MODIFIED="1700747208587">
+<attribute NAME="式" VALUE="{../../寄附金額_共通}+{//条例指定_市町村_寄附金支払額}"/>
+</node>
+<node TEXT="寄附金限度額" ID="ID_1889704497" CREATED="1700743902702" MODIFIED="1700748592627">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="334.49999 pt"/>
+<attribute NAME="式" VALUE="MIN({../寄附金額},ROUNDUP({../..//合計所得金額}*0.3))"/>
+</node>
+<node TEXT="一般控除額" ID="ID_1991900400" CREATED="1700743926445" MODIFIED="1700743941433">
+<attribute NAME="式" VALUE="ROUNDUP(MAX(({../寄附金限度額}-2000),0)*{寄附金控除割合})"/>
+<node TEXT="寄附金控除割合" ID="ID_1774092933" CREATED="1700743951061" MODIFIED="1700747242444">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="153.75 pt"/>
+<attribute NAME="式" VALUE="IF({//政令指定都市}=1,0.08,0.06)"/>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="税額控除後の税額" ID="ID_1040650769" CREATED="1700747369282" MODIFIED="1700747390876">
+<attribute NAME="式" VALUE="{道府県民税}+{市町村民税}"/>
+<node TEXT="道府県民税" ID="ID_585394586" CREATED="1700747402362" MODIFIED="1700747426923">
+<attribute NAME="式" VALUE="ROUNDDOWN({端数処理前},-2)"/>
+<node TEXT="端数処理前" ID="ID_1303094720" CREATED="1700747438667" MODIFIED="1700747758863">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="1305.74996 pt"/>
+<attribute NAME="式" VALUE="MAX(  {//住民税/ふるさと納税を含めない/税額/道府県民税} - {//住民税/ふるさと納税を含めない/調整控除/道府県民税} -  {//住民税/ふるさと納税を含めない/配当控除/道府県民税} - {//住民税/ふるさと納税を含めない/住宅借入金等特別税額控除/道府県民税} - {//住民税/ふるさと納税を含めない/寄附金税額控除/道府県民税}  , 0  )"/>
+</node>
+</node>
+<node TEXT="市町村民税" ID="ID_1668169902" CREATED="1700747402362" MODIFIED="1700747568738">
+<attribute NAME="式" VALUE="ROUNDDOWN({端数処理前},-2)"/>
+<node TEXT="端数処理前" ID="ID_1352347215" CREATED="1700747438667" MODIFIED="1700747582371">
+<attribute NAME="式" VALUE="MAX(  {//住民税/ふるさと納税を含めない/税額/市町村民税} - {//住民税/ふるさと納税を含めない/調整控除/市町村民税} -  {//住民税/ふるさと納税を含めない/配当控除/市町村民税} - {//住民税/ふるさと納税を含めない/住宅借入金等特別税額控除/市町村民税} - {//住民税/ふるさと納税を含めない/寄附金税額控除/市町村民税}  , 0  )"/>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="ふるさと納税を含める" ID="ID_124105842" CREATED="1700490269876" MODIFIED="1700748106458">
+<attribute NAME="式" VALUE="{税額控除後の税額}"/>
+<node TEXT="税額" ID="ID_1335340031" CREATED="1700660037525" MODIFIED="1700660066849">
+<attribute NAME="式" VALUE="{../../$}"/>
+<node TEXT="道府県民税" ID="ID_1630490392" CREATED="1700660285636" MODIFIED="1700660314847">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+<node TEXT="市町村民税" ID="ID_631837235" CREATED="1700660317031" MODIFIED="1700660349424">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+</node>
+<node TEXT="調整控除" ID="ID_995937118" CREATED="1700660037525" MODIFIED="1700660364713">
+<attribute NAME="式" VALUE="{../../$}"/>
+<node TEXT="道府県民税" ID="ID_850275748" CREATED="1700660285636" MODIFIED="1700660314847">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+<node TEXT="市町村民税" ID="ID_1099620251" CREATED="1700660317031" MODIFIED="1700660349424">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+</node>
+<node TEXT="配当控除" FOLDED="true" ID="ID_820453219" CREATED="1700660037525" MODIFIED="1700660377648">
+<attribute NAME="式" VALUE="{../../$}"/>
+<node TEXT="道府県民税" ID="ID_1162466092" CREATED="1700660285636" MODIFIED="1700660314847">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+<node TEXT="市町村民税" ID="ID_745036669" CREATED="1700660317031" MODIFIED="1700660349424">
+<attribute NAME="式" VALUE="{../../../$1/合計/$}"/>
+</node>
+</node>
+<node TEXT="住宅借入金等特別税額控除" ID="ID_155256094" CREATED="1700660701271" MODIFIED="1700660784415">
+<attribute NAME="式" VALUE="{道府県民税}+{市町村民税}"/>
+<richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      ３千万円未対応
+    </p>
+  </body>
+</html></richcontent>
+<node TEXT="所得税控除後" ID="ID_1950179275" CREATED="1700660794687" MODIFIED="1700660817888">
+<attribute NAME="式" VALUE="MAX({//住宅ローン控除額}-{//所得税//ふるさと納税を含めない//住宅借入金等特別税額控除},0)"/>
+</node>
+<node TEXT="合計所得金額" ID="ID_806214573" CREATED="1700660827241" MODIFIED="1700661047183">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="161.25 pt"/>
+<attribute NAME="式" VALUE="{//住民税//所得金額//合計所得金額}"/>
+</node>
+<node TEXT="道府県民税" ID="ID_384417864" CREATED="1700741860554" MODIFIED="1700742893156">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="616.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//居住が平成19年または20年}&lt;&gt;1, MIN({控除可能額},MAX({../../税額//道府県民税}-{../../調整控除/道府県民税}-{../../配当控除/道府県民税},0)), 0)"/>
+<node TEXT="控除可能額" ID="ID_401471863" CREATED="1700742923400" MODIFIED="1700742948896">
+<attribute NAME="式" VALUE="MIN(INT({../../所得税控除後}*{.//住宅借入金控除割合}), {.//限度額})"/>
+<node TEXT="限度額" ID="ID_1248722924" CREATED="1700741883820" MODIFIED="1700741901624">
+<attribute NAME="式" VALUE="MIN({../../..//合計所得金額}*{.//住宅借入金控除率},{.//住宅借入金控除限度額})"/>
+<node TEXT="住宅借入金控除割合" ID="ID_141908831" CREATED="1700741912586" MODIFIED="1700741961316" HGAP_QUANTITY="29.75 pt">
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1,0.2,0.4)"/>
+<node TEXT="住宅借入金控除率" ID="ID_742653203" CREATED="1700742011570" MODIFIED="1700743070284">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="826.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.014,0.01),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.028,0.02))"/>
+<node TEXT="住宅借入金控除限度額" ID="ID_1019315539" CREATED="1700743155989" MODIFIED="1700743223906">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="869.99997 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,27_300,19_500),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,54_600,39_000))"/>
+</node>
+</node>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="市町村民税" ID="ID_816185758" CREATED="1700741860554" MODIFIED="1700743325585">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="616.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//居住が平成19年または20年}&lt;&gt;1, MIN({控除可能額},MAX({../../税額/市町村民税}-{../../調整控除/市町村民税}-{../../配当控除/市町村民税},0)), 0)"/>
+<attribute NAME="値" VALUE="0"/>
+<node TEXT="控除可能額" ID="ID_643539039" CREATED="1700742923400" MODIFIED="1700742948896">
+<attribute NAME="式" VALUE="MIN(INT({../../所得税控除後}*{.//住宅借入金控除割合}), {.//限度額})"/>
+<attribute NAME="値" VALUE="0"/>
+<node TEXT="限度額" ID="ID_1087079571" CREATED="1700741883820" MODIFIED="1700741901624">
+<attribute NAME="式" VALUE="MIN({../../..//合計所得金額}*{.//住宅借入金控除率},{.//住宅借入金控除限度額})"/>
+<attribute NAME="値" VALUE="39000"/>
+<node TEXT="住宅借入金控除割合" ID="ID_357657927" CREATED="1700741912586" MODIFIED="1700743390105" HGAP_QUANTITY="29.75 pt">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="165.75 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1,0.8,0.6)"/>
+<attribute NAME="値" VALUE="0.4"/>
+<node TEXT="住宅借入金控除率" ID="ID_113828293" CREATED="1700742011570" MODIFIED="1700743453914">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="826.49998 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.056,0.04),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,0.042,0.03))"/>
+<attribute NAME="値" VALUE="0.02"/>
+<node TEXT="住宅借入金控除限度額" ID="ID_286689132" CREATED="1700743155989" MODIFIED="1700743223906">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="869.99997 pt"/>
+<attribute NAME="式" VALUE="IF({//入力//政令指定都市}=1, IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,27_300,19_500),  IF({//居住がH26年からR3年_消費税8パーセントまたは10パーセント}=1,54_600,39_000))"/>
+<attribute NAME="値" VALUE="39000"/>
+</node>
+</node>
+</node>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="寄附金税額控除" ID="ID_1555957403" CREATED="1700743637019" MODIFIED="1700749018925">
+<icon BUILTIN="button_cancel"/>
+<attribute NAME="式" VALUE="{道府県民税}+{市町村民税}"/>
+<node TEXT="寄附金額_共通" ID="ID_1364206018" CREATED="1700743675144" MODIFIED="1700743719912">
+<attribute NAME="式" VALUE="{.//条例指定以外の寄附金}"/>
+<node TEXT="第1号寄附金" ID="ID_407747020" CREATED="1700743725845" MODIFIED="1700743739240">
+<node TEXT="条例指定以外の寄附金" ID="ID_1982246432" CREATED="1700743749161" MODIFIED="1700743776857">
+<attribute NAME="式" VALUE="{//住民税税額控除の対象の寄附金支払額}"/>
+</node>
+</node>
+<node TEXT="合計所得金額" ID="ID_702782064" CREATED="1700743788196" MODIFIED="1700743821504">
+<attribute NAME="式" VALUE="{//住民税//所得金額//合計所得金額}"/>
+</node>
+</node>
+<node TEXT="特例控除率" ID="ID_1956238471" CREATED="1700752874094" MODIFIED="1700752933213">
+<attribute NAME="式" VALUE="{適用判定}"/>
+</node>
+<node TEXT="道府県民税" ID="ID_1422481744" CREATED="1700743840164" MODIFIED="1700743861487">
+<attribute NAME="式" VALUE="{一般控除額}"/>
+<node TEXT="寄附金額" ID="ID_1071915712" CREATED="1700743875905" MODIFIED="1700743891080">
+<attribute NAME="式" VALUE="{../../寄附金額_共通}+{//条例指定_道府県_寄附金支払額}"/>
+</node>
+<node TEXT="寄附金限度額" ID="ID_663631892" CREATED="1700743902702" MODIFIED="1700748488092">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="334.49999 pt"/>
+<attribute NAME="式" VALUE="MIN({../寄附金額},ROUNDUP({../..//合計所得金額}*0.3))"/>
+</node>
+<node TEXT="一般控除額" ID="ID_1011063037" CREATED="1700743926445" MODIFIED="1700743941433">
+<attribute NAME="式" VALUE="ROUNDUP(MAX(({../寄附金限度額}-2000),0)*{寄附金控除割合})"/>
+<node TEXT="寄附金控除割合" ID="ID_1945634107" CREATED="1700743951061" MODIFIED="1700743968600">
+<attribute NAME="式" VALUE="IF({//政令指定都市}=1,0.02,0.04)"/>
+</node>
+</node>
+</node>
+<node TEXT="市町村民税" ID="ID_559288598" CREATED="1700743840164" MODIFIED="1700747187587">
+<attribute NAME="式" VALUE="{一般控除額}"/>
+<node TEXT="寄附金額" ID="ID_1646510397" CREATED="1700743875905" MODIFIED="1700747208587">
+<attribute NAME="式" VALUE="{../../寄附金額_共通}+{//条例指定_市町村_寄附金支払額}"/>
+</node>
+<node TEXT="寄附金限度額" ID="ID_517897973" CREATED="1700743902702" MODIFIED="1700748496882">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="334.49999 pt"/>
+<attribute NAME="式" VALUE="MIN({../寄附金額},ROUNDUP({../..//合計所得金額}*0.3))"/>
+</node>
+<node TEXT="一般控除額" ID="ID_1846634062" CREATED="1700743926445" MODIFIED="1700743941433">
+<attribute NAME="式" VALUE="ROUNDUP(MAX(({../寄附金限度額}-2000),0)*{寄附金控除割合})"/>
+<node TEXT="寄附金控除割合" ID="ID_1515347094" CREATED="1700743951061" MODIFIED="1700747242444">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="153.75 pt"/>
+<attribute NAME="式" VALUE="IF({//政令指定都市}=1,0.08,0.06)"/>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="税額控除後の税額" ID="ID_797210727" CREATED="1700747369282" MODIFIED="1700747390876">
+<attribute NAME="式" VALUE="{道府県民税}+{市町村民税}"/>
+<node TEXT="道府県民税" ID="ID_1336110853" CREATED="1700747402362" MODIFIED="1700747426923">
+<attribute NAME="式" VALUE="ROUNDDOWN({端数処理前},-2)"/>
+<node TEXT="端数処理前" ID="ID_590704234" CREATED="1700747438667" MODIFIED="1700748167610">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="1305.74996 pt"/>
+<attribute NAME="式" VALUE="MAX(  {//住民税/ふるさと納税を含める/税額/道府県民税} - {//住民税/ふるさと納税を含める/調整控除/道府県民税} -  {//住民税/ふるさと納税を含める/配当控除/道府県民税} - {//住民税/ふるさと納税を含める/住宅借入金等特別税額控除/道府県民税} - {//住民税/ふるさと納税を含める/寄附金税額控除/道府県民税}  , 0  )"/>
+</node>
+</node>
+<node TEXT="市町村民税" ID="ID_66177715" CREATED="1700747402362" MODIFIED="1700747568738">
+<attribute NAME="式" VALUE="ROUNDDOWN({端数処理前},-2)"/>
+<node TEXT="端数処理前" ID="ID_848769058" CREATED="1700747438667" MODIFIED="1700748214771">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="1305.74996 pt"/>
+<attribute NAME="式" VALUE="MAX(  {//住民税/ふるさと納税を含める/税額/市町村民税} - {//住民税/ふるさと納税を含める/調整控除/市町村民税} -  {//住民税/ふるさと納税を含める/配当控除/市町村民税} - {//住民税/ふるさと納税を含める/住宅借入金等特別税額控除/市町村民税} - {//住民税/ふるさと納税を含める/寄附金税額控除/市町村民税}  , 0  )"/>
+</node>
+</node>
+</node>
 </node>
 </node>
 </node>

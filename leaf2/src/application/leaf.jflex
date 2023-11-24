@@ -227,7 +227,7 @@ return EOS;
 	{yylval = new StrExpr(yytext()); return LPATH;}
 
 <NAMIKAKKONAI>.
-	{ throw new Error("NAMIKAKKONAI不正な文字です <"+ yytext()+">"); }
+	{ throw new Exception("{}内に不正な文字です <"+ yytext()+">"); }
 
 //t_namikakkonai_ignore = ""
 

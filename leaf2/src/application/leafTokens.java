@@ -1,5 +1,5 @@
 package application;
-// Output created by jacc on Mon Nov 20 00:16:20 JST 2023
+// Output created by jacc on Thu Nov 23 22:26:53 JST 2023
 
 interface LeafTokens {
     int ENDINPUT = 0;

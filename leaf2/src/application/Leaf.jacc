@@ -1156,14 +1156,24 @@ shiki_list :
 
   private LeafLexer lexer;
 
+	private String strMessage;
+
   private void yyerror(String msg) {
   		D.dprint((Expr)yyrv);
   		if (lexer.yyatEOF() ) {
   			return;
   		}
-      System.out.println("エラー: " + msg);
-      System.exit(1);
+
+  		// TODO msgの保存
+		strMessage = msg;
+  		return;
+//      System.out.println("エラー: " + msg);
+  //    System.exit(1);
   }
+
+public String getErrorMessage() {
+	return strMessage;
+}
 
 public Expr BuildAs(){
 return ( Expr )yyrv;

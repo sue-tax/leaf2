@@ -48,6 +48,9 @@ public class Message {
 	public static String IFS_INVALID_LAST_COND =
 			"#IFS_INVALID_LAST_COND#IFSの最後の条件が不適切";
 
+	public static String INVALID_EXPRESSION_ =
+			"#INVALID_EXPRESSION#%s";
+
 	public static String UNSUPPORT =
 			"#UNSUPPORT#サポート外";
 

@@ -216,7 +216,24 @@ public class LeafNode /*implements Element*/ {
         LeafLexer lexer = new LeafLexer(in);
         LeafParser parser = new LeafParser(lexer);
         lexer.nextToken();
-        parser.parse();    // parse the input
+        boolean flag = true;
+        try {
+        	flag = parser.parse();    // parse the input
+        } catch(Exception e) {
+        	D.dprint(e);
+        	D.dprint(flag);
+        	D.dprint_method_end();
+        	return null;
+        }
+        D.dprint(flag);
+        if (! flag) {
+        	String strMessage = parser.getErrorMessage();
+        	String strError = String.format(
+        			Message.INVALID_EXPRESSION_, strMessage);
+        	D.dprint(strError);
+        	D.dprint_method_end();
+        	return strError;
+        }
         Expr expr = parser.BuildAs();
 //        D.dprint(expr);
         String strValue = calcExpr(expr);

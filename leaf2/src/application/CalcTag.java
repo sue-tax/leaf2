@@ -265,7 +265,12 @@ public class CalcTag {
 //					int[] range = getIndex(leafNode);
 					int[] range = getIndex(leafNodeBase,
 							llHeader);
-//					D.dprint(range);
+					D.dprint(range);
+					if (range == null) {
+						D.dprint(strError);
+						D.dprint_method_end();
+						return null;
+					}
 					// LeafNode セルのノードの取得
 					NodeList nodeCellList = leafNode.getCell(range);
 					for (int j=0; j<nodeCellList.getLength(); j++) {
@@ -504,7 +509,7 @@ public class CalcTag {
 
 	private int calcIndex(LeafNode leafNode,
 			IndexShikiExpr indexShiki, List<CellExpr> listHeader) {
-//		D.dprint_method_start();
+		D.dprint_method_start();
 		Expr expr = indexShiki.expr;
 		int index = 0;
 		if (expr != null) {
@@ -513,8 +518,8 @@ public class CalcTag {
 			if (! expr.isNumeric(leafNode, element)) {
 				if (! expr.isString(leafNode, element)) {
 					strError = Message.INDEX_MUST_INTEGER;
-//					D.dprint(strError);
-//					D.dprint_method_end();
+					D.dprint(strError);
+					D.dprint_method_end();
 					return -1;
 				}
 				// 文字列ならば、ヘッダーを調べる
@@ -524,30 +529,30 @@ public class CalcTag {
 					strError = cellExpr.checkError(
 							leafNode, element);
 					if (strError != null) {
-//						D.dprint(strError);
-//						D.dprint_method_end();
+						D.dprint(strError);
+						D.dprint_method_end();
 						return -1;
 					}
 					if (! cellExpr.isString(
 							leafNode, element)) {
 						strError = Message.NOT_STRING_HEADER;
-//						D.dprint(strError);
-//						D.dprint_method_end();
+						D.dprint(strError);
+						D.dprint_method_end();
 						return -1;
 					}
 					String strHeader = cellExpr.evalStr();
 					strHeader = strHeader.trim();
-//					D.dprint("strHeader *"+ strHeader +"*");
-//					D.dprint("strData   *"+ strData +"*");
+					D.dprint("strHeader *"+ strHeader +"*");
+					D.dprint("strData   *"+ strData +"*");
 					if (strHeader.compareTo(strData) == 0) {
 						index = i + 1;
-//						D.dprint(index);
-//						D.dprint_method_end();
+						D.dprint(index);
+						D.dprint_method_end();
 						return index;
 					}
 				}
 				strError = Message.NOT_FOUND_HEADER;
-//				D.dprint_method_end();
+				D.dprint_method_end();
 				return -1;
 			}
 			BigDecimal indexDecimal = expr.eval();
@@ -555,12 +560,12 @@ public class CalcTag {
 				index = indexDecimal.intValueExact();
 			} catch(Exception e) {
 				strError = Message.INDEX_MUST_INTEGER;
-//				D.dprint(strError);
-//				D.dprint_method_end();
+				D.dprint(strError);
+				D.dprint_method_end();
 				return -1;
 			}
-//			D.dprint("index");
-//			D.dprint(index);
+			D.dprint("index");
+			D.dprint(index);
 		}
 		if (indexShiki.sharp) {
 			// TODO
@@ -572,12 +577,12 @@ public class CalcTag {
 				index = base - index;
 			}
 			strError = Message.UNSUPPORT;
-//			D.dprint(strError);
-//			D.dprint_method_end();
+			D.dprint(strError);
+			D.dprint_method_end();
 			return -1;
 		}
-//		D.dprint(index);
-//		D.dprint_method_end();
+		D.dprint(index);
+		D.dprint_method_end();
 		return index;
 	}
 

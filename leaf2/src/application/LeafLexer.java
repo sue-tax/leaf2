@@ -3,10 +3,6 @@
 // source: leaf.jflex
 
 package application;
-/* import 文はここに書く */
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.CharArrayReader;
 import java.io.StringReader;
 
 
@@ -338,7 +334,7 @@ class LeafLexer implements LeafTokens {
 				return token = ENDINPUT;
 			}
 			return token;
-		} catch(IOException e) {
+		} catch(Exception e) {
 			return token = ENDINPUT;
 		}
 	}
@@ -378,7 +374,7 @@ class LeafLexer implements LeafTokens {
 
 //    'JOIN',
 
-    public static void main(String argv[]) throws java.io.IOException {
+    public static void main(String argv[]) throws Exception {
 //    	InputStreamReader in = new InputStreamReader(System.in);
 //==================================================
 //    	char[] ach = "123+45*2.34-123_456{adab}|123|456".toCharArray();
@@ -673,7 +669,7 @@ class LeafLexer implements LeafTokens {
   private void zzDoEOF() throws java.io.IOException {
     if (!zzEOFDone) {
       zzEOFDone = true;
-    
+
   yyclose();    }
   }
 
@@ -685,9 +681,9 @@ class LeafLexer implements LeafTokens {
    * or an I/O-Error occurs.
    *
    * @return the next token.
-   * @exception java.io.IOException if any I/O-Error occurs.
+ * @throws Exception
    */
-  public int yylex() throws java.io.IOException
+  public int yylex() throws Exception
   {
     int zzInput;
     int zzAction;
@@ -843,7 +839,7 @@ class LeafLexer implements LeafTokens {
           // fall through
           case 48: break;
           case 2:
-            { 
+            {
             }
           // fall through
           case 49: break;
@@ -955,7 +951,7 @@ class LeafLexer implements LeafTokens {
           // fall through
           case 70: break;
           case 24:
-            { throw new Error("NAMIKAKKONAI不正な文字です <"+ yytext()+">");
+            { throw new Exception("{}内に不正な文字です <"+ yytext()+">");
             }
           // fall through
           case 71: break;
