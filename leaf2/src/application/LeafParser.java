@@ -829,6 +829,7 @@ class CellExpr extends NodeExpr {
                                 nodeElement);
                 String strCalc = leafNode.calcCell();
         strCalc = strCalc.trim();
+        		D.dprint(strCalc);
                 try {
                         value = new BigDecimal(strCalc);
                         flagNumeric = true;

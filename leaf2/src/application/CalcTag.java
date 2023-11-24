@@ -190,6 +190,7 @@ public class CalcTag {
 //		D.dprint(expr.strMarkRef);
 	    LeafNode leafNodeBase = new LeafNode(document,
 	    		element);
+	    D.dprint(element.getAttribute(LeafMM.DATA_ATTR));
 		String strValue = null;
 		List<NodeExpr> listNode =
 				new ArrayList<NodeExpr>();
@@ -258,8 +259,10 @@ public class CalcTag {
 						D.dprint_method_end();
 						return null;
 				    }
+//					List<List<CellExpr>>llHeader = getTableHeader(
+//							leafNodeBase);
 					List<List<CellExpr>>llHeader = getTableHeader(
-							leafNodeBase);
+							leafNode);
 				    //index1から行の範囲　１～：１～　０は終わりまで
 					//index2から列の範囲
 //					int[] range = getIndex(leafNode);
@@ -277,6 +280,7 @@ public class CalcTag {
 						Node node = nodeCellList.item(j);
 						CellExpr cellExpr = new CellExpr(document,
 								(Element)node);
+						D.dprint(((Element)node).getAttribute("TEXT"));
 						listNode.add(cellExpr);
 					}
 				}
@@ -345,6 +349,7 @@ public class CalcTag {
 		// index1, index2 から範囲指定
 		D.dprint_method_start();
 		int[] range = new int[4];
+		D.dprint(expr.index1);
 		if (expr.index1.all) {
 			range[0] = 1;
 			range[1] = -1;	//最後の行
@@ -381,6 +386,7 @@ public class CalcTag {
 				range[1] = -1;	// 最後の行
 			}
 		}
+		D.dprint(expr.index2);
 		if (expr.index2.all) {
 			range[2] = 1;
 			range[3] = -1;	//最後の行
@@ -471,7 +477,7 @@ public class CalcTag {
 
 	private List<List<CellExpr>> getTableHeader(
 			LeafNode leafNode) {
-//		D.dprint_method_start();
+		D.dprint_method_start();
 		NodeList listRowHeader = leafNode.getRowHeader();
 		if (listRowHeader == null) {
 			strError = leafNode.getError();
@@ -489,6 +495,7 @@ public class CalcTag {
 			Element element = (Element)listRowHeader.item(i);
 			CellExpr cellExpr = new CellExpr(
 					document, element);
+			D.dprint(cellExpr);
 			listRowExpr.add(cellExpr);
 		}
 		List<CellExpr> listColumnExpr = new ArrayList<CellExpr>();
@@ -496,13 +503,14 @@ public class CalcTag {
 			Element element = (Element)listColumnHeader.item(i);
 			CellExpr cellExpr = new CellExpr(
 					document, element);
+			D.dprint(cellExpr);
 			listColumnExpr.add(cellExpr);
 		}
 		List<List<CellExpr>> llHeader = new ArrayList
 				<List<CellExpr>>();
 		llHeader.add(listRowExpr);
 		llHeader.add(listColumnExpr);
-//		D.dprint_method_end();
+		D.dprint_method_end();
 		return llHeader;
 	}
 
@@ -524,6 +532,8 @@ public class CalcTag {
 				}
 				// 文字列ならば、ヘッダーを調べる
 				String strData = expr.evalStr();
+				D.dprint(strData);
+				D.dprint(listHeader.size());
 				for (int i=0; i<listHeader.size(); i++) {
 					CellExpr cellExpr = listHeader.get(i);
 					strError = cellExpr.checkError(

@@ -2840,9 +2840,9 @@
 <node TEXT="寄附金額" ID="ID_1568543646" CREATED="1700743875905" MODIFIED="1700743891080">
 <attribute NAME="式" VALUE="{../../寄附金額_共通}+{//条例指定_道府県_寄附金支払額}"/>
 </node>
-<node TEXT="寄附金限度額" ID="ID_1378012031" CREATED="1700743902702" MODIFIED="1700748579764">
+<node TEXT="寄附金限度額" ID="ID_1378012031" CREATED="1700743902702" MODIFIED="1700824160514">
 <attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="334.49999 pt"/>
-<attribute NAME="式" VALUE="MIN({../寄附金額},ROUNDUP(../..//合計所得金額}*0.3))"/>
+<attribute NAME="式" VALUE="MIN({../寄附金額},ROUNDUP({../..//合計所得金額}*0.3))"/>
 </node>
 <node TEXT="一般控除額" ID="ID_875431782" CREATED="1700743926445" MODIFIED="1700743941433">
 <attribute NAME="式" VALUE="ROUNDUP(MAX(({../寄附金限度額}-2000),0)*{寄附金控除割合})"/>
@@ -2999,9 +2999,138 @@
 <attribute NAME="式" VALUE="{//住民税//所得金額//合計所得金額}"/>
 </node>
 </node>
-<node TEXT="特例控除率" ID="ID_1956238471" CREATED="1700752874094" MODIFIED="1700752933213">
+<node TEXT="特例控除率" ID="ID_1956238471" CREATED="1700752874094" MODIFIED="1700834153315">
 <attribute NAME="式" VALUE="{適用判定}"/>
+<richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      土地の譲渡等に係る事業所得等について適用なし
+    </p>
+  </body>
+</html>
+</richcontent>
+<node TEXT="第1号" ID="ID_534342318" CREATED="1700816122818" MODIFIED="1700816142891">
+<attribute NAME="式" VALUE="{特則}"/>
+<node TEXT="課税総所得金額" ID="ID_1533487729" CREATED="1700816155635" MODIFIED="1700823866244">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="183.74999 pt"/>
+<attribute NAME="式" VALUE="{//住民税/課税所得金額/課税総所得金額}"/>
 </node>
+<node TEXT="原則" ID="ID_1426049272" CREATED="1700816191212" MODIFIED="1700831039014">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="542.99998 pt"/>
+<attribute NAME="式" VALUE="LOOKUP({../課税総所得金額}   ,   {//固定値/寄附金税額控除特例率}[2:][&quot;下限&quot;]  ,   {//固定値/寄附金税額控除特例率}[2:][&quot;原則&quot;]   ,TRUE())"/>
+</node>
+<node TEXT="特則" ID="ID_694683201" CREATED="1700831147149" MODIFIED="1700831228899">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="674.24998 pt"/>
+<attribute NAME="式" VALUE="LOOKUP({//住民税//ふるさと納税を含める//課税総所得金額}  ,   {//固定値/寄附金税額控除特例率}[2:][&quot;下限&quot;]  ,   {//固定値/寄附金税額控除特例率}[2:][&quot;特則&quot;]   ,TRUE())"/>
+</node>
+</node>
+<node TEXT="第2号" ID="ID_1335843400" CREATED="1700832531156" MODIFIED="1700832555841">
+<attribute NAME="式" VALUE="{特則}"/>
+<node TEXT="原則" ID="ID_175187225" CREATED="1700832573281" MODIFIED="1700832590713">
+<attribute NAME="式" VALUE="0.9" OBJECT="org.freeplane.features.format.FormattedNumber|0.9"/>
+</node>
+<node TEXT="特則" ID="ID_914904833" CREATED="1700832599481" MODIFIED="1700832622400">
+<attribute NAME="式" VALUE="0.9" OBJECT="org.freeplane.features.format.FormattedNumber|0.9"/>
+</node>
+</node>
+<node TEXT="第3号" ID="ID_167663250" CREATED="1700832630281" MODIFIED="1700833075919"><richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      附則第5条の5により、適用なし
+    </p>
+  </body>
+</html>
+</richcontent>
+</node>
+<node TEXT="附則5条の5第1号" ID="ID_14944608" CREATED="1700833711064" MODIFIED="1700834022060">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="585.74998 pt"/>
+<attribute NAME="式" VALUE="LOOKUP({課税山林所得金額の5分の1}  ,   {//固定値/寄附金税額控除特例率}[2:][&quot;下限&quot;]  ,   {//固定値/寄附金税額控除特例率}[2:][&quot;原則&quot;]   ,TRUE())"/>
+<node TEXT="課税山林所得金額の5分の1" ID="ID_467499507" CREATED="1700833775033" MODIFIED="1700833794327">
+<attribute NAME="式" VALUE="INT({//住民税/課税所得金額/課税山林所得金額}/5)"/>
+</node>
+</node>
+<node TEXT="附則5条の5第2号" ID="ID_40278568" CREATED="1700834122981" MODIFIED="1700834140237"><richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      課税退職所得金額について適用なし
+    </p>
+  </body>
+</html>
+</richcontent>
+</node>
+<node TEXT="附則5条の5第3号" ID="ID_68184677" CREATED="1700834141278" MODIFIED="1700834184183"><richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      土地の譲渡等に係る事業所得等について適用なし
+    </p>
+  </body>
+</html>
+</richcontent>
+</node>
+<node TEXT="附則5条の5第4号" ID="ID_1502930452" CREATED="1700834155375" MODIFIED="1700834203390">
+<attribute NAME="式" VALUE="{特則}"/>
+<node TEXT="原則" ID="ID_170779932" CREATED="1700834213743" MODIFIED="1700834229094">
+<attribute NAME="式" VALUE="0.6" OBJECT="org.freeplane.features.format.FormattedNumber|0.6"/>
+</node>
+<node TEXT="特則" ID="ID_356292397" CREATED="1700834216853" MODIFIED="1700834250270">
+<attribute NAME="式" VALUE="0.5937" OBJECT="org.freeplane.features.format.FormattedNumber|0.5937"/>
+</node>
+</node>
+<node TEXT="附則5条の5第5号" ID="ID_1342939736" CREATED="1700834155375" MODIFIED="1700834277380">
+<attribute NAME="式" VALUE="{特則}"/>
+<node TEXT="原則" ID="ID_553318199" CREATED="1700834213743" MODIFIED="1700834281350">
+<attribute NAME="式" VALUE="0.75" OBJECT="org.freeplane.features.format.FormattedNumber|0.75|#0.####"/>
+</node>
+<node TEXT="特則" ID="ID_574797718" CREATED="1700834216853" MODIFIED="1700834291653">
+<attribute NAME="式" VALUE="0.7469" OBJECT="org.freeplane.features.format.FormattedNumber|0.74685|#0.####"/>
+</node>
+</node>
+<node TEXT="適用判定" ID="ID_1449600616" CREATED="1700834339311" MODIFIED="1700834366882">
+<attribute_layout NAME_WIDTH="33.75 pt" VALUE_WIDTH="232.49999 pt"/>
+<attribute NAME="式" VALUE="IF( {第1号判定}, {../第1号},  {附則第5条の5判定結果})"/>
+<node TEXT="第1号判定" ID="ID_1910231934" CREATED="1700834393903" MODIFIED="1700834409581">
+<attribute NAME="式" VALUE="IF( {//住民税/課税所得金額/課税総所得金額}-{//住民税/調整控除/人的控除差} &gt;= 0,1,0)"/>
+</node>
+<node TEXT="第2号判定" ID="ID_268706058" CREATED="1700834986232" MODIFIED="1700835022635">
+<attribute NAME="式" VALUE="IF( ( ({//住民税/課税所得金額/課税総所得金額}-{//住民税/調整控除/人的控除差}) &lt; 0) AND ({//住民税/課税所得金額/課税山林所得金額} &gt; 0),1,0)"/>
+<richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      課税退職所得の判定は除外
+    </p>
+  </body>
+</html>
+</richcontent>
+</node>
+<node TEXT="第3号判定" ID="ID_1341729544" CREATED="1700835034718" MODIFIED="1700835050339">
+<attribute NAME="式" VALUE="IF(  ( ( {//住民税/課税所得金額/課税総所得金額}-{//住民税/調整控除/人的控除差} &lt; 0) OR  ({//住民税/課税所得金額/課税総所得金額} = 0   )  ) AND ({//住民税/課税所得金額/課税山林所得金額} &gt; 0),1,0)"/>
+</node>
+<node TEXT="附則第5条の5判定" ID="ID_1642049259" CREATED="1700835077702" MODIFIED="1700835094115">
+<attribute NAME="式" VALUE="IF( {../第2号判定} OR {../第3号判定}OR  ({//住民税/課税所得金額/課税短期譲渡所得金額}&gt;0) OR ({//住民税/課税所得金額/課税長期譲渡所得金額}&gt;0) OR ({//住民税/課税所得金額/一般株式等に係る課税譲渡所得等の金額}&gt;0) OR ({//住民税/課税所得金額/上場株式等に係る課税譲渡所得等の金額}&gt;0) OR ({//住民税/課税所得金額/上場株式等に係る課税配当所得等の金額}&gt;0) OR ({//住民税/課税所得金額/先物取引に係る課税雑所得等の金額}&gt;0) , 1, 0)"/>
+</node>
+</node>
+</node>
+<node TEXT="!STOP!" ID="ID_903815945" CREATED="1700817139585" MODIFIED="1700817147394"/>
 <node TEXT="道府県民税" ID="ID_1422481744" CREATED="1700743840164" MODIFIED="1700743861487">
 <attribute NAME="式" VALUE="{一般控除額}"/>
 <node TEXT="寄附金額" ID="ID_1071915712" CREATED="1700743875905" MODIFIED="1700743891080">
@@ -3997,6 +4126,234 @@
   </body>
 </html></richcontent>
 </node>
+</node>
+<node TEXT="寄附金税額控除特例率" ID="ID_1205101210" CREATED="1700816289211" MODIFIED="1700816740537"><richcontent TYPE="NOTE">
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <table border="0" style="width: 80%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0">
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            下限
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            上限
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            原則
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            特則
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            1
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            1949000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.85
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.84895
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            2
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            1950000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            3299000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.8
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.7979
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            3
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            3300000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            6949000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.7
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.6958
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            4
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            6949000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            8999000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.67
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.66517
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            5
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            9000000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            17999000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.57
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.56307
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            6
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            18000000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            39999000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.5
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.4916
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            7
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            40000000
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.45
+          </p>
+        </td>
+        <td valign="top" style="width: 20%; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-width: 1; border-right-width: 1; border-bottom-width: 1; border-left-width: 1">
+          <p style="margin-top: 1; margin-right: 1; margin-bottom: 1; margin-left: 1">
+            0.44055
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+</richcontent>
 </node>
 </node>
 <node TEXT="出力" POSITION="bottom_or_right" ID="ID_985532294" CREATED="1696474819149" MODIFIED="1698730738186" COLOR="#0033ff" HGAP_QUANTITY="243 px" VSHIFT_QUANTITY="-46 px">

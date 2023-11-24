@@ -1,0 +1,43 @@
+
+cd C:\Users\sue-t\Documents\Eclipse\workspace2020\leaf2\src\application
+
+
+cd C:\Users\sue-t\git\leaf2\leaf2\src\application
+..\jflex Leaf.jflex
+
+	int nextToken() {
+		try {
+			token = yylex();
+			if (token == EOF) {
+//				D.dprint("+++EOF+++");
+				return token = ENDINPUT;
+			}
+			return token;
+		} catch(Exception e) {
+			return token = ENDINPUT;
+		}
+	}
+
+
+
+cd C:\Users\sue-t\git\leaf2\leaf2\src\application
+java -jar ..\..\jacc.jar Leaf.jacc
+
+leafTokens.java　のファイルの先頭に
+package application;
+を追加
+
+
+
+
+
+
+cd C:\Users\sue-t\Documents\Eclipse\workspace2020\leaf2\src
+jflex Leaf.jflex
+copy LeafLexer.java application
+
+cd C:\Users\sue-t\Documents\Eclipse\workspace2020\leaf2
+java -jar jacc.jar src\Leaf.jacc
+cd src
+copy LeafParser.java application
+copy LeafTokens.java application

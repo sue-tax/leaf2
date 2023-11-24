@@ -332,10 +332,11 @@ public class LeafNode /*implements Element*/ {
 //	"./richcontent/html/body/table/tr[1]/td/p";
 
 	public NodeList getRowHeader() {
-//		D.dprint_method_start();
+		D.dprint_method_start();
 		String strHeader =
 				"./richcontent/html/body/table/tr[1]/td/p";
 		NodeList nodeList = null;
+		D.dprint(element.getAttribute(LeafMM.DATA_ATTR));
 		try {
 			nodeList = (NodeList)xpath.evaluate(
 					strHeader, element,
@@ -347,7 +348,8 @@ public class LeafNode /*implements Element*/ {
 //			D.dprint_method_end();
 			return null;
 		}
-//		D.dprint_method_end();
+		D.dprint(nodeList);
+		D.dprint_method_end();
 		return nodeList;
 	}
 

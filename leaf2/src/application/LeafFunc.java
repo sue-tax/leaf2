@@ -631,14 +631,6 @@ public class LeafFunc {
         	D.dprint_method_end();
         	return;
         }
-//        if (! findExpr.isLogical(node, element)) {
-//        	strError = Message.IF_COND_MUST_LOGICAL;
-//        	flagNumeric = false;
-//        	flagLogi = false;
-//        	flagString = false;
-//        	D.dprint_method_end();
-//        	return;
-//        }
         Expr targetExpr = listExpr.get(1);
         strError = targetExpr.checkErrorMulti(node, element);
         if (strError != null) {
@@ -828,7 +820,9 @@ public class LeafFunc {
     	    	return;
         	}
         } else {
+        	D.dprint("下限値");
         	// 下限値
+        	D.dprint(findExpr.isNumeric(node, element));
         	if (! findExpr.isNumeric(node, element)) {
 				strError = Message.MUST_NUMERIC;
 	        	flagNumeric = false;
@@ -839,6 +833,7 @@ public class LeafFunc {
         	}
        		// 数値
     		BigDecimal value1 = findExpr.eval();
+    		D.dprint(value1);
 //    		D.dprint("listNode size");
 //    		D.dprint(listNode2.size());
     		int i;
@@ -861,6 +856,7 @@ public class LeafFunc {
     	        	return;
     			}
     			BigDecimal value2 = expr2.eval();
+    			D.dprint(value2);
     			if (value1.compareTo(value2)<0) {
     				// OKとする
 //    				if (i == 0) {

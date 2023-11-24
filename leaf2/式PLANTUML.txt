@@ -1,0 +1,44 @@
+
+@startebnf
+
+ichijishiki = NUMBER | "(", shiki, ")" | "{", NODE, "}" ;
+
+tag = "{", ( [ MARKDEF ], LPATH | MARKREF ) , "}", [ "[", index, "]" , "[", index, "]" ];
+
+
+@endebnf
+
+@startregex
+title LPATH 理想
+("." | ".." | "/" | "//" | [^./{}] )+
+@endregex
+
+@startregex
+title LPATH 実際
+[^}:]+
+@endregex
+
+@startregex
+title NUMBER
+[0123456789._]+
+@endregex
+
+@startregex
+title CHILD_AT
+@
+@endregex
+
+@startregex
+title NODE
+[^}]+
+@endregex
+
+@startregex
+title MARKDEF
+[123456789][0123456789]*:
+@endregex
+
+@startregex
+title MARKREF
+:[123456789][0123456789]*
+@endregex
