@@ -552,8 +552,12 @@ public class LeafFunc {
             keta = ketaDouble.intValue();
         }
         BigDecimal src = expr.eval();
-        value = src.setScale(keta, RoundingMode.DOWN).setScale(0);
-        logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+        D.dprint(src);
+        D.dprint(keta);
+        D.dprint(src.setScale(keta, RoundingMode.DOWN));
+//        value = src.setScale(keta, RoundingMode.DOWN).setScale(0);
+        value = src.setScale(keta, RoundingMode.DOWN);
+        logiValue = (value.compareTo(BigDecimal.ZERO)!=0)?true:false;
         flagNumeric = true;
         flagLogi = true;
         flagString = false;

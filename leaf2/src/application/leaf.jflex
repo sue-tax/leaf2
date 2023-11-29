@@ -253,5 +253,5 @@ return EOS;
 
 
 <YYINITIAL>.
-	{ throw new Error("不正な文字です <"+ yytext()+">"); }
+	{ throw new Exception("不正な文字です <"+ yytext()+">"); }
 

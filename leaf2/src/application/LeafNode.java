@@ -261,7 +261,15 @@ public class LeafNode /*implements Element*/ {
 		if (expr.isNumeric(this, element)) {
 			BigDecimal value = expr.eval();
 //			D.dprint(value);
-			strValue = String.valueOf(value);
+
+
+//			strValue = String.valueOf(value);
+
+			strValue = value.toPlainString();
+			D.dprint(strValue);
+
+
+
 		} else if (expr.isString(this, element)) {
 			strValue = expr.evalStr();
 		} else {

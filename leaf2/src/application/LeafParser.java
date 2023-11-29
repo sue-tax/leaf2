@@ -1,4 +1,4 @@
-// Output created by jacc on Thu Nov 23 22:26:53 JST 2023
+// Output created by jacc on Wed Nov 29 15:56:39 JST 2023
 
 
 package application;
@@ -61,7 +61,7 @@ class NumberExpr extends Expr {
                 this.value = new BigDecimal(rep_value); }
         void preProc(LeafNode node, Element element) {}
         BigDecimal eval() { return value; }
-        boolean evalLogi() { return value.compareTo(BigDecimal.ZERO) == 0; }
+        boolean evalLogi() { return value.compareTo(BigDecimal.ZERO) != 0; }
         boolean isNumeric(LeafNode node, Element element) { return true; }
         boolean isString(LeafNode node, Element element) { return false; }
         boolean isLogical(LeafNode node, Element element) { return true; }
@@ -122,7 +122,7 @@ class ChildAtExpr extends Expr {
                 try {
                         value = new BigDecimal(strNumber);
                         flagNumeric = true;
-                logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+                logiValue = (value.compareTo(BigDecimal.ZERO)!=0)?true:false;
                         flagLogi = true;
         } catch(Exception e) {
                         flagNumeric = false;
@@ -446,7 +446,7 @@ abstract class AccExpr extends BinExpr {
                         return;
                 }
                 value = proc();
-        logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+        logiValue = (value.compareTo(BigDecimal.ZERO)!=0)?true:false;
         }
         abstract BigDecimal proc();
 
@@ -497,7 +497,11 @@ class DivExpr extends AccExpr {
         DivExpr(Expr left, Expr right) {
                 super(left, right); }
         BigDecimal proc() {
-                return left.eval().divide(right.eval()); }
+//                D.dprint(left.eval());
+//                D.dprint(right.eval());
+                BigDecimal rv = left.eval().divide(right.eval(), 20, BigDecimal.ROUND_DOWN);
+//                D.dprint(rv);
+                return rv; }
 }
 
 class RuijouExpr extends AccExpr {
@@ -567,7 +571,7 @@ class TagExpr extends Expr {
                 try {
                         value = new BigDecimal(strCalc);
                         flagNumeric = true;
-                logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+                logiValue = (value.compareTo(BigDecimal.ZERO)!=0)?true:false;
                         flagLogi = true;
         } catch(Exception e) {
                         flagNumeric = false;
@@ -665,7 +669,7 @@ class NodeExpr extends Expr {
                 try {
                         value = new BigDecimal(strCalc);
                         flagNumeric = true;
-                logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+                logiValue = (value.compareTo(BigDecimal.ZERO)!=0)?true:false;
                         flagLogi = true;
         } catch(Exception e) {
                         flagNumeric = false;
@@ -709,7 +713,7 @@ class StringNodeExpr extends NodeExpr {
                         value = new BigDecimal(strValue);
                         flagNumeric = true;
                 logiValue = (value.compareTo(BigDecimal.ZERO)
-                                ==0)?true:false;
+                                !=0)?true:false;
                         flagLogi = true;
         } catch(Exception e) {
                         flagNumeric = false;
@@ -829,11 +833,10 @@ class CellExpr extends NodeExpr {
                                 nodeElement);
                 String strCalc = leafNode.calcCell();
         strCalc = strCalc.trim();
-        		D.dprint(strCalc);
                 try {
                         value = new BigDecimal(strCalc);
                         flagNumeric = true;
-                logiValue = (value.compareTo(BigDecimal.ZERO)==0)?true:false;
+                logiValue = (value.compareTo(BigDecimal.ZERO)!=0)?true:false;
                         flagLogi = true;
         } catch(Exception e) {
                         flagNumeric = false;
@@ -6400,20 +6403,15 @@ return ( Expr )yyrv;
 }
   public static void main(String[] args) {
 //        InputStreamReader in = new InputStreamReader(System.in);
-                StringReader in = new StringReader("MIN({../寄附金額},ROUNDUP({ancestor::寄附金税額控除//合計所得金額}*0.3))");
+                StringReader in = new StringReader("{..}");
           LeafLexer lexer = new LeafLexer(in);
           D.dprint("a");
       LeafParser calc = new LeafParser(lexer);
           D.dprint("b");
       lexer.nextToken();
       D.dprint("c");
-      boolean flag = calc.parse();    // parse the input
-      D.dprint(flag);
-      if (! flag) {
-    	  String str = calc.getErrorMessage();
-    	  D.dprint(str);
-      }
-      D.dprint("d");
+      calc.parse();    // parse the input
+          D.dprint("d");
           Expr expr = calc.BuildAs();
           D.dprint(expr);
   }

@@ -263,12 +263,25 @@ public class LeafMM {
 		String[] astr = getAttribute(leafNode);
 		if ((astr[INDEX_FORMAT] != null) &&
 				(! astr[INDEX_FORMAT].equals(""))) {
-			D.dprint(astr[INDEX_VALUE]);
-			D.dprint(astr[INDEX_FORMAT]);
-			double doubleValue = Double.parseDouble(astr[INDEX_VALUE]);
-			String str = String.format(astr[INDEX_FORMAT],
-					doubleValue);
-//			System.out.println(str);
+//			D.dprint(astr[INDEX_VALUE]);
+//			D.dprint(astr[INDEX_FORMAT]);
+			String str;
+			try {
+				if (astr[INDEX_FORMAT].endsWith("d")) {
+					D.dprint(astr[INDEX_VALUE]);
+					long longValue = Long.parseLong(astr[INDEX_VALUE]);
+					str = String.format(astr[INDEX_FORMAT],
+							longValue);
+				} else {
+					double doubleValue = Double.parseDouble(astr[INDEX_VALUE]);
+					str = String.format(astr[INDEX_FORMAT],
+							doubleValue);
+				}
+			} catch (NumberFormatException e) {
+				// TODO 自動生成された catch ブロック
+				str = Message.MUST_NUMERIC;
+			}
+			//			System.out.println(str);
 			leafNode.setAttribute(DATA_ATTR, str);
 		}
 	}

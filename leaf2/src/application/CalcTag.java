@@ -81,8 +81,8 @@ public class CalcTag {
 	 * @return
 	 */
 	public String calcExprTag() {
-//		D.dprint_method_start();
-//		D.dprint(expr);
+		D.dprint_method_start();
+		D.dprint(expr);
 //		D.dprint(expr.index1);
 //		D.dprint(expr.strMarkDef);
 //		D.dprint(expr.strMarkRef);
@@ -102,6 +102,7 @@ public class CalcTag {
 						strXpath, element,
 						XPathConstants.NODESET);
 			} catch (XPathExpressionException e) {
+				D.dprint(strXpath);
 				strError = String.format(
 						Message.SYSTEM_ERROR_, e.toString());
 				D.dprint(strError);

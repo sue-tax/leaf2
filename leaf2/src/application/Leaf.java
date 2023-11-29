@@ -59,7 +59,7 @@ public class Leaf {
 	    		rootMM);
 	    leafNode.calcNode();
 	    calcAllsub(rootMM);
-		// setDataFormatValueWithFormat
+		setDataFormatValueWithFormat();
 	    D.dprint_method_end();
 	    return;
 	}
@@ -176,10 +176,15 @@ public class Leaf {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Leaf leaf = new Leaf("ふるさと納税.mm");
+//		Leaf leaf = new Leaf("ふるさと納税.mm");
+//		leaf.calcAll();
+//		leaf.setDataFormatValueWithFormat();
+//		LeafMM.save(leaf.documentMM, "ふるさと納税結果.mm");
+
+		Leaf leaf = new Leaf("外形標準課税.mm");
 		leaf.calcAll();
 		leaf.setDataFormatValueWithFormat();
-		LeafMM.save(leaf.documentMM, "ふるさと納税結果.mm");
+		LeafMM.save(leaf.documentMM, "外形標準課税結果.mm");
 
 //		Leaf leaf = new Leaf("leafテスト用.mm");
 //		leaf.calcAll();

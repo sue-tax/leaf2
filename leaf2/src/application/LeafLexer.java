@@ -834,7 +834,7 @@ class LeafLexer implements LeafTokens {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { throw new Error("不正な文字です <"+ yytext()+">");
+            { throw new Exception("不正な文字です <"+ yytext()+">");
             }
           // fall through
           case 48: break;
