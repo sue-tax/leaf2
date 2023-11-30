@@ -60,6 +60,7 @@ public class LeafMM {
 	public static final String ATTR_VALUE = "値";
 	public static final String ATTR_EXPR = "式";
 	public static final String ATTR_FORMAT = "フォーマット";
+	public static final String ATTR_DISPLAY = "表示";
 
 	public static final int INDEX_VALUE = 0;
 	public static final int INDEX_EXPR = 1;
@@ -251,6 +252,10 @@ public class LeafMM {
 		D.dprint_method_end();
 	}
 
+
+	private static final String XPATH_DISPLAY_NODE =
+			"./attribute[@NAME='表示']";
+
 	/**
 	 * フォーマットが指定されている場合に、
 	 * フォーマットに従い値を
@@ -259,7 +264,7 @@ public class LeafMM {
 	 * @param leafNode
 	 */
 	public static void setDataFromValueWithFormat(
-			Element leafNode ) {
+			Document documentMM, Element leafNode ) {
 		String[] astr = getAttribute(leafNode);
 		if ((astr[INDEX_FORMAT] != null) &&
 				(! astr[INDEX_FORMAT].equals(""))) {
@@ -267,22 +272,62 @@ public class LeafMM {
 //			D.dprint(astr[INDEX_FORMAT]);
 			String str;
 			try {
-				if (astr[INDEX_FORMAT].endsWith("d")) {
-					D.dprint(astr[INDEX_VALUE]);
-					long longValue = Long.parseLong(astr[INDEX_VALUE]);
-					str = String.format(astr[INDEX_FORMAT],
-							longValue);
+				if (! astr[INDEX_FORMAT].startsWith("%%")) {
+					if (astr[INDEX_FORMAT].endsWith("d")) {
+//						D.dprint(astr[INDEX_VALUE]);
+						long longValue = Long.parseLong(astr[INDEX_VALUE]);
+						str = String.format(astr[INDEX_FORMAT],
+								longValue);
+					} else {
+						double doubleValue = Double.parseDouble(astr[INDEX_VALUE]);
+						str = String.format(astr[INDEX_FORMAT],
+								doubleValue);
+					}
+					leafNode.setAttribute(DATA_ATTR, str);
 				} else {
-					double doubleValue = Double.parseDouble(astr[INDEX_VALUE]);
-					str = String.format(astr[INDEX_FORMAT],
-							doubleValue);
+					String strFormat = astr[INDEX_FORMAT].substring(1);
+					if (astr[INDEX_FORMAT].endsWith("d")) {
+//						D.dprint(astr[INDEX_VALUE]);
+						long longValue = Long.parseLong(astr[INDEX_VALUE]);
+						str = String.format(strFormat,
+								longValue);
+					} else {
+						double doubleValue = Double.parseDouble(astr[INDEX_VALUE]);
+						str = String.format(strFormat,
+								doubleValue);
+					}
+
+					NodeList nodeList = null;
+					try {
+						nodeList = (NodeList)xpath.evaluate(
+								XPATH_DISPLAY_NODE, leafNode,
+								XPathConstants.NODESET);
+					} catch (XPathExpressionException e) {
+						String strError = String.format(
+								Message.SYSTEM_ERROR_, e.toString());
+						D.dprint(strError);
+						D.dprint_method_end();
+						return;
+					}
+					if (nodeList.getLength() == 0) {
+						Element elementValue =
+								documentMM.createElement(
+								"attribute");
+						elementValue.setAttribute("NAME", "表示");
+						elementValue.setAttribute("VALUE", str);
+						leafNode.appendChild(elementValue);
+					} else /*if (nodeList.getLength() == 1)*/ {
+						Element elementValue =
+								(Element)nodeList.item(0);
+						elementValue.setAttribute("VALUE", str);
+					}
+					leafNode.setAttribute(ATTR_DISPLAY, str);
 				}
 			} catch (NumberFormatException e) {
 				// TODO 自動生成された catch ブロック
 				str = Message.MUST_NUMERIC;
 			}
 			//			System.out.println(str);
-			leafNode.setAttribute(DATA_ATTR, str);
 		}
 	}
 

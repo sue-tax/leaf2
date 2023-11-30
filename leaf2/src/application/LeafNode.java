@@ -225,7 +225,7 @@ public class LeafNode /*implements Element*/ {
         	D.dprint_method_end();
         	return null;
         }
-        D.dprint(flag);
+//        D.dprint(flag);
         if (! flag) {
         	String strMessage = parser.getErrorMessage();
         	String strError = String.format(
@@ -261,15 +261,9 @@ public class LeafNode /*implements Element*/ {
 		if (expr.isNumeric(this, element)) {
 			BigDecimal value = expr.eval();
 //			D.dprint(value);
-
-
 //			strValue = String.valueOf(value);
-
 			strValue = value.toPlainString();
-			D.dprint(strValue);
-
-
-
+//			D.dprint(strValue);
 		} else if (expr.isString(this, element)) {
 			strValue = expr.evalStr();
 		} else {

@@ -158,7 +158,7 @@ public class Leaf {
 		for (int i=0; i<nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
 			Element element = (Element)node;
-			setDataFromValueWithFormat(element);
+			setDataFromValueWithFormat(documentMM, element);
 		}
 	}
 
@@ -171,20 +171,21 @@ public class Leaf {
 	 * @param leafNode
 	 */
 	public static void setDataFromValueWithFormat(
-			Element leafNode ) {
-		LeafMM.setDataFromValueWithFormat(leafNode);
+			Document documentMM, Element leafNode ) {
+		LeafMM.setDataFromValueWithFormat(
+				documentMM,leafNode);
 	}
 
 	public static void main(String[] args) throws Exception {
-//		Leaf leaf = new Leaf("ふるさと納税.mm");
-//		leaf.calcAll();
-//		leaf.setDataFormatValueWithFormat();
-//		LeafMM.save(leaf.documentMM, "ふるさと納税結果.mm");
-
-		Leaf leaf = new Leaf("外形標準課税.mm");
+		Leaf leaf = new Leaf("ふるさと納税.mm");
 		leaf.calcAll();
 		leaf.setDataFormatValueWithFormat();
-		LeafMM.save(leaf.documentMM, "外形標準課税結果.mm");
+		LeafMM.save(leaf.documentMM, "ふるさと納税結果.mm");
+
+//		Leaf leaf = new Leaf("外形標準課税.mm");
+//		leaf.calcAll();
+//		leaf.setDataFormatValueWithFormat();
+//		LeafMM.save(leaf.documentMM, "外形標準課税結果.mm");
 
 //		Leaf leaf = new Leaf("leafテスト用.mm");
 //		leaf.calcAll();

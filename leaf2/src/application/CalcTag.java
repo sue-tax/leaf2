@@ -82,7 +82,7 @@ public class CalcTag {
 	 */
 	public String calcExprTag() {
 		D.dprint_method_start();
-		D.dprint(expr);
+//		D.dprint(expr);
 //		D.dprint(expr.index1);
 //		D.dprint(expr.strMarkDef);
 //		D.dprint(expr.strMarkRef);
@@ -191,7 +191,7 @@ public class CalcTag {
 //		D.dprint(expr.strMarkRef);
 	    LeafNode leafNodeBase = new LeafNode(document,
 	    		element);
-	    D.dprint(element.getAttribute(LeafMM.DATA_ATTR));
+//	    D.dprint(element.getAttribute(LeafMM.DATA_ATTR));
 		String strValue = null;
 		List<NodeExpr> listNode =
 				new ArrayList<NodeExpr>();
@@ -269,7 +269,7 @@ public class CalcTag {
 //					int[] range = getIndex(leafNode);
 					int[] range = getIndex(leafNodeBase,
 							llHeader);
-					D.dprint(range);
+//					D.dprint(range);
 					if (range == null) {
 						D.dprint(strError);
 						D.dprint_method_end();
@@ -281,7 +281,7 @@ public class CalcTag {
 						Node node = nodeCellList.item(j);
 						CellExpr cellExpr = new CellExpr(document,
 								(Element)node);
-						D.dprint(((Element)node).getAttribute("TEXT"));
+//						D.dprint(((Element)node).getAttribute("TEXT"));
 						listNode.add(cellExpr);
 					}
 				}
@@ -339,7 +339,7 @@ public class CalcTag {
 					(Element)node);
 			list.add(cellExpr);
 		}
-		D.dprint(list);
+//		D.dprint(list);
 		D.dprint_method_end();
 		return list;
 	}
@@ -350,7 +350,7 @@ public class CalcTag {
 		// index1, index2 から範囲指定
 		D.dprint_method_start();
 		int[] range = new int[4];
-		D.dprint(expr.index1);
+//		D.dprint(expr.index1);
 		if (expr.index1.all) {
 			range[0] = 1;
 			range[1] = -1;	//最後の行
@@ -387,7 +387,7 @@ public class CalcTag {
 				range[1] = -1;	// 最後の行
 			}
 		}
-		D.dprint(expr.index2);
+//		D.dprint(expr.index2);
 		if (expr.index2.all) {
 			range[2] = 1;
 			range[3] = -1;	//最後の行
@@ -424,7 +424,7 @@ public class CalcTag {
 				range[3] = -1;	// 最後の列
 			}
 		}
-		D.dprint(range);
+//		D.dprint(range);
 		D.dprint_method_end();
 		return range;
 	}
@@ -470,7 +470,7 @@ public class CalcTag {
 
 //		String strValue = leafNode.getValue(element);
 
-		D.dprint(strValue);
+//		D.dprint(strValue);
 		D.dprint_method_end();
 		return strValue;
 	}
@@ -533,8 +533,8 @@ public class CalcTag {
 				}
 				// 文字列ならば、ヘッダーを調べる
 				String strData = expr.evalStr();
-				D.dprint(strData);
-				D.dprint(listHeader.size());
+//				D.dprint(strData);
+//				D.dprint(listHeader.size());
 				for (int i=0; i<listHeader.size(); i++) {
 					CellExpr cellExpr = listHeader.get(i);
 					strError = cellExpr.checkError(
@@ -553,11 +553,11 @@ public class CalcTag {
 					}
 					String strHeader = cellExpr.evalStr();
 					strHeader = strHeader.trim();
-					D.dprint("strHeader *"+ strHeader +"*");
-					D.dprint("strData   *"+ strData +"*");
+//					D.dprint("strHeader *"+ strHeader +"*");
+//					D.dprint("strData   *"+ strData +"*");
 					if (strHeader.compareTo(strData) == 0) {
 						index = i + 1;
-						D.dprint(index);
+//						D.dprint(index);
 						D.dprint_method_end();
 						return index;
 					}
@@ -575,8 +575,8 @@ public class CalcTag {
 				D.dprint_method_end();
 				return -1;
 			}
-			D.dprint("index");
-			D.dprint(index);
+//			D.dprint("index");
+//			D.dprint(index);
 		}
 		if (indexShiki.sharp) {
 			// TODO
@@ -592,7 +592,7 @@ public class CalcTag {
 			D.dprint_method_end();
 			return -1;
 		}
-		D.dprint(index);
+//		D.dprint(index);
 		D.dprint_method_end();
 		return index;
 	}
